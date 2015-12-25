@@ -3,28 +3,55 @@ from logical_permissions.interfaces.LogicalPermissionsBase import LogicalPermiss
 class LogicalPermissions(LogicalPermissionsBase):
 
   def addType(self, name, callback):
-    return
+    pass
   
   def removeType(self, name):
-    return 
+    pass 
     
   def typeExists(self, name):
-    return 
+    pass 
 
   def getTypeCallback(self, name):
-    return
+    pass
 
   def getTypes(self):
-    return
+    pass
 
   def setTypes(self, types):
-    return
+    pass
   
   def getBypassCallback(self):
-    return 
+    pass 
     
   def setBypassCallback(self, callback):
-    return 
+    pass 
 
   def checkAccess(self, permissions, context):
-    return
+    pass
+  
+  def __checkBypassAccess(self, context):
+    pass
+  
+  def __dispatch(self, permissions, type = None, context):
+    pass
+  
+  def __processAND(self, permissions, type = None, context):
+    pass
+  
+  def __processNAND(self, permissions, type = None, context):
+    pass
+  
+  def __processOR(self, permissions, type = None, context):
+    pass
+  
+  def __processNOR(self, permissions, type = None, context):
+    pass
+  
+  def __processXOR(self, permissions, type = None, context):
+    pass
+  
+  def __processNOT(self, permissions, type = None, context):
+    pass
+  
+  def __externalAccessCheck(self, permission, type, context):
+    pass
