@@ -1,5 +1,5 @@
 *
 !/.gitignore
 !/setup.py
-!/logical-permissions
-!/logical-permissions/*
+!/logical_permissions
+!/logical_permissions/*
