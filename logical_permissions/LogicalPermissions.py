@@ -32,26 +32,26 @@ class LogicalPermissions(LogicalPermissionsBase):
   def __checkBypassAccess(self, context):
     pass
   
-  def __dispatch(self, permissions, type = None, context):
+  def __dispatch(self, permissions, context, type = None):
     pass
   
-  def __processAND(self, permissions, type = None, context):
+  def __processAND(self, permissions, context, type = None):
     pass
   
-  def __processNAND(self, permissions, type = None, context):
+  def __processNAND(self, permissions, context, type = None):
     pass
   
-  def __processOR(self, permissions, type = None, context):
+  def __processOR(self, permissions, context, type = None):
     pass
   
-  def __processNOR(self, permissions, type = None, context):
+  def __processNOR(self, permissions, context, type = None):
     pass
   
-  def __processXOR(self, permissions, type = None, context):
+  def __processXOR(self, permissions, context, type = None):
     pass
   
-  def __processNOT(self, permissions, type = None, context):
+  def __processNOT(self, permissions, context, type = None):
     pass
   
-  def __externalAccessCheck(self, permission, type, context):
+  def __externalAccessCheck(self, permission, context, type):
     pass
