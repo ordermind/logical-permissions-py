@@ -39,5 +39,3 @@ class LogicalPermissionsBase(metaclass=abc.ABCMeta):
   @abc.abstractmethod
   def checkAccess(self, permissions, context):
     pass
-
-
