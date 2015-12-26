@@ -1,0 +1,2 @@
+class PermissionTypeNotRegisteredException(Exception):
+  pass

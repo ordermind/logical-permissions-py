@@ -1,0 +1,2 @@
+class InvalidValueForLogicGateException(Exception):
+  pass

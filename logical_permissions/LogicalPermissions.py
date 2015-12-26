@@ -1,9 +1,14 @@
 from logical_permissions.interfaces.LogicalPermissionsBase import LogicalPermissionsBase
 
 class LogicalPermissions(LogicalPermissionsBase):
+  
+  def __init__(self):
+    self.__types = {}
+    self.__bypass_callback = None
 
   def addType(self, name, callback):
-    pass
+    if(type(name) is not str):
+      
   
   def removeType(self, name):
     pass 
