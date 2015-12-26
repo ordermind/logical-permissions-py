@@ -17,19 +17,19 @@ class LogicalPermissions(LogicalPermissionsBase):
 
     types = self.getTypes()
     types[name] = callback
-    self.setTypes(types)
+    self.setTypes(types = types)
   
   def removeType(self, name):
     if(type(name) is not str):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
-    if not self.typeExists(name):
+    if not self.typeExists(name = name):
       raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
     
     types = self.getTypes()
     types.pop(name, None)
-    self.setTypes(types)
+    self.setTypes(types = types)
     
   def typeExists(self, name):
     if(type(name) is not str):
@@ -41,7 +41,15 @@ class LogicalPermissions(LogicalPermissionsBase):
     return name in types
 
   def getTypeCallback(self, name):
-    pass
+    if(type(name) is not str):
+      raise InvalidArgumentTypeException('The name parameter must be a string.')
+    if not name:
+      raise InvalidArgumentValueException('The name parameter cannot be empty.')
+    if not self.typeExists(name = name):
+      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
+    
+    types = self.getTypes()
+    return types[name]
 
   def getTypes(self):
     return self.__types
