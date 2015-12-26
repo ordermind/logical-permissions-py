@@ -8,7 +8,7 @@ class LogicalPermissions(LogicalPermissionsBase):
     self.__bypass_callback = None
 
   def addType(self, name, callback):
-    if(type(name) is not str):
+    if type(name) is not str:
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
@@ -20,7 +20,7 @@ class LogicalPermissions(LogicalPermissionsBase):
     self.setTypes(types = types)
   
   def removeType(self, name):
-    if(type(name) is not str):
+    if type(name) is not str:
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
@@ -32,7 +32,7 @@ class LogicalPermissions(LogicalPermissionsBase):
     self.setTypes(types = types)
     
   def typeExists(self, name):
-    if(type(name) is not str):
+    if type(name) is not str:
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
@@ -41,7 +41,7 @@ class LogicalPermissions(LogicalPermissionsBase):
     return name in types
 
   def getTypeCallback(self, name):
-    if(type(name) is not str):
+    if type(name) is not str:
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
@@ -55,6 +55,16 @@ class LogicalPermissions(LogicalPermissionsBase):
     return self.__types
 
   def setTypes(self, types):
+    if not isinstance(types, dict):
+      raise InvalidArgumentTypeException('The types parameter must be a dictionary.')
+    for name in types:
+      if type(name) is not str:
+        raise InvalidArgumentValueException("The types keys must be strings.")
+      if not name:
+        raise InvalidArgumentValueException('The name parameter cannot be empty.')
+      if not hasattr(types[name], '__call__'):
+        raise InvalidArgumentValueException('The types callbacks must be callables.')
+
     self.__types = types
   
   def getBypassCallback(self):
