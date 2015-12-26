@@ -68,7 +68,7 @@ class LogicalPermissions(LogicalPermissionsBase):
     self.__types = types
   
   def getBypassCallback(self):
-    pass 
+    return self.__bypass_callback
     
   def setBypassCallback(self, callback):
     pass 
