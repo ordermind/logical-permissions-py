@@ -71,7 +71,10 @@ class LogicalPermissions(LogicalPermissionsBase):
     return self.__bypass_callback
     
   def setBypassCallback(self, callback):
-    pass 
+    if not hasattr(callback, '__call__'):
+      raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
+    
+    self.__bypass_callback = callback
 
   def checkAccess(self, permissions, context):
     pass
