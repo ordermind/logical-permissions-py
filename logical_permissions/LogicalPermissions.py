@@ -20,7 +20,16 @@ class LogicalPermissions(LogicalPermissionsBase):
     self.setTypes(types)
   
   def removeType(self, name):
-    pass 
+    if(type(name) is not str):
+      raise InvalidArgumentTypeException('The name parameter must be a string.')
+    if not name:
+      raise InvalidArgumentValueException('The name parameter cannot be empty.')
+    if not self.typeExists(name):
+      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
+    
+    types = self.getTypes()
+    types.pop(name, None)
+    self.setTypes(types)
     
   def typeExists(self, name):
     if(type(name) is not str):
