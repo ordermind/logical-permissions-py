@@ -1,4 +1,5 @@
 from logical_permissions.interfaces.LogicalPermissionsBase import LogicalPermissionsBase
+from logical_permissions.exceptions import *
 
 class LogicalPermissions(LogicalPermissionsBase):
   
@@ -8,22 +9,36 @@ class LogicalPermissions(LogicalPermissionsBase):
 
   def addType(self, name, callback):
     if(type(name) is not str):
-      
+      raise InvalidArgumentTypeException('The name parameter must be a string.')
+    if not name:
+      raise InvalidArgumentValueException('The name parameter cannot be empty.')
+    if not hasattr(callback, '__call__'):
+      raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
+
+    types = self.getTypes()
+    types[name] = callback
+    self.setTypes(types)
   
   def removeType(self, name):
     pass 
     
   def typeExists(self, name):
-    pass 
+    if(type(name) is not str):
+      raise InvalidArgumentTypeException('The name parameter must be a string.')
+    if not name:
+      raise InvalidArgumentValueException('The name parameter cannot be empty.')
+
+    types = self.getTypes()
+    return name in types
 
   def getTypeCallback(self, name):
     pass
 
   def getTypes(self):
-    pass
+    return self.__types
 
   def setTypes(self, types):
-    pass
+    self.__types = types
   
   def getBypassCallback(self):
     pass 
