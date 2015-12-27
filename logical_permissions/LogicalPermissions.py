@@ -88,7 +88,9 @@ class LogicalPermissions(LogicalPermissionsBase):
       if isinstance(permissions['no_bypass'], bool):
         allow_bypass = not permissions['no_bypass']
       elif isinstance(permissions['no_bypass'], dict):
-        allow_bypass = self.__dispatch(permissions = permissions['no_bypass'], context = context)
+        allow_bypass = not self.__dispatch(permissions = permissions['no_bypass'], context = context)
+      else:
+        raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions['no_bypass']))
       permissions.pop('no_bypass', None)
     if allow_bypass and self.__checkBypassAccess(context = context):
       access = True
@@ -108,27 +110,29 @@ class LogicalPermissions(LogicalPermissionsBase):
     access = False
     if permissions:
       if isinstance(permissions, str):
-        access = self.__externalAccessCheck(permissions = permissions, context = context, type = type)
+        access = self.__externalAccessCheck(permission = permissions, context = context, type = type)
       elif isinstance(permissions, list):
         if len(permissions) > 0:
           access = self.__processOR(permissions = permissions, context = context, type = type)
       elif isinstance(permissions, dict):
         if len(permissions) == 1:
-          key = permissions.keys()[0]
+          key = list(permissions.keys())[0]
           value = permissions[key]
           if key is 'AND':
-            access = self.__processAND(permissions = permissions, context = context, type = type)
+            access = self.__processAND(permissions = value, context = context, type = type)
           elif key is 'NAND':
-            access = self.__processNAND(permissions = permissions, context = context, type = type)
+            access = self.__processNAND(permissions = value, context = context, type = type)
           elif key is 'OR':
-            access = self.__processOR(permissions = permissions, context = context, type = type)
+            access = self.__processOR(permissions = value, context = context, type = type)
           elif key is 'NOR':
-            access = self.__processNOR(permissions = permissions, context = context, type = type)
+            access = self.__processNOR(permissions = value, context = context, type = type)
           elif key is 'XOR':
-            access = self.__processXOR(permissions = permissions, context = context, type = type)
+            access = self.__processXOR(permissions = value, context = context, type = type)
           elif key is 'NOT':
-            access = self.__processNOT(permissions = permissions, context = context, type = type)
+            access = self.__processNOT(permissions = value, context = context, type = type)
           else:
+            if 'long' not in globals(): # Python 3 compability
+              long = int
             if not isinstance(key, (int, long, float)):
               if type is None:
                 type = key
@@ -239,16 +243,16 @@ class LogicalPermissions(LogicalPermissionsBase):
       if len(permissions) < 2:
         raise InvalidValueForLogicGateException('The value dict of an XOR gate must contain a minimum of two elements. Current value: {0}'.format(permissions))
       
-        for key in permissions:
-          subpermissions = {key: permissions[key]}
-          this_access = self.__dispatch(permissions = subpermissions, context = context, type = type)
-          if this_access:
-            count_true += 1
-          else:
-            count_false += 1
-          if count_true > 0 and count_false > 0:
-            access = True
-            break
+      for key in permissions:
+        subpermissions = {key: permissions[key]}
+        this_access = self.__dispatch(permissions = subpermissions, context = context, type = type)
+        if this_access:
+          count_true += 1
+        else:
+          count_false += 1
+        if count_true > 0 and count_false > 0:
+          access = True
+          break
     else:
       raise InvalidValueForLogicGateException('The value of an XOR gate must be a list or a dict. Current value: {0}'.format(permissions))
     return access
@@ -268,7 +272,7 @@ class LogicalPermissions(LogicalPermissionsBase):
   
   def __externalAccessCheck(self, permission, context, type):
     if not self.typeExists(type):
-      raise PermissionTypeNotRegisteredException('The permission type {0} has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(type))
+      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(type))
     access = False
     callback = self.getTypeCallback(type)
     if hasattr(callback, '__call__'):

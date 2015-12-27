@@ -3,3 +3,5 @@
 !/setup.py
 !/logical_permissions
 !/logical_permissions/*
+!/tests
+!/tests/*
