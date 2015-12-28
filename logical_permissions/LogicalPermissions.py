@@ -105,6 +105,8 @@ class LogicalPermissions(object):
     bypass_callback = self.getBypassCallback()
     if hasattr(bypass_callback, '__call__'):
       bypass_access = bypass_callback(context)
+      if not isinstance(bypass_access, bool):
+        raise InvalidCallbackReturnTypeException('The bypass access callback must return a boolean.')
     return bypass_access
   
   def __dispatch(self, permissions, context, type = None):
@@ -278,4 +280,6 @@ class LogicalPermissions(object):
     callback = self.getTypeCallback(type)
     if hasattr(callback, '__call__'):
       access = callback(permission, context)
+      if not isinstance(access, bool):
+        raise InvalidCallbackReturnTypeException('The registered callback for the permission type "{0}" must return a boolean.'.format(type))
     return access

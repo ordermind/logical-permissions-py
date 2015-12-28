@@ -221,6 +221,14 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setBypassCallback(bypass_callback)
     lp.checkAccess(permissions = {}, context = {'user': user})
     
+  def testCheckAccessBypassAccessWrongReturnType(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return 1
+    lp.setBypassCallback(bypass_callback)
+    with self.assertRaises(InvalidCallbackReturnTypeException):
+      lp.checkAccess(permissions = {}, context = {})
+    
   def testCheckAccessBypassAccessAllow(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
@@ -311,6 +319,31 @@ class LogicalPermissionsTest(unittest.TestCase):
       'never_bypass': True,
     }
     self.assertFalse(lp.checkAccess(permissions, {'user': user}))
+    
+  def testCheckAccessWrongPermissionCallbackReturnType(self):
+    lp = LogicalPermissions()
+    def flag_callback(flag, context):
+      access = False
+      if flag is 'testflag':
+        if 'testflag' in context.get('user', {}):
+          access = context['user']['testflag']
+      return 0
+    types = {
+      'flag': flag_callback,
+    }
+    lp.setTypes(types)
+    permissions = {
+      'no_bypass': {
+        'flag': 'never_bypass',
+      },
+      'flag': 'testflag',
+    }
+    user = {
+      'id': 1,
+      'testflag': True
+    }
+    with self.assertRaises(InvalidCallbackReturnTypeException):
+      lp.checkAccess(permissions, {'user': user})
 
   def testCheckAccessSingleItemAllow(self):
     lp = LogicalPermissions()

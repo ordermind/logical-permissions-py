@@ -1,0 +1,2 @@
+class InvalidCallbackReturnTypeException(Exception):
+  pass
