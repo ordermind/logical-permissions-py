@@ -1,8 +1,7 @@
-from logical_permissions.interfaces.LogicalPermissionsBase import LogicalPermissionsBase
 from logical_permissions.exceptions import *
 import copy
 
-class LogicalPermissions(LogicalPermissionsBase):
+class LogicalPermissions(object):
   
   def __init__(self):
     self.__types = {}
