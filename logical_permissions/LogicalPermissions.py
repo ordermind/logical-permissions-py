@@ -85,19 +85,20 @@ class LogicalPermissions(LogicalPermissionsBase):
     
     access = False
     allow_bypass = True
-    if 'no_bypass' in permissions:
-      if isinstance(permissions['no_bypass'], bool):
-        allow_bypass = not permissions['no_bypass']
-      elif isinstance(permissions['no_bypass'], dict):
-        allow_bypass = not self.__dispatch(permissions = permissions['no_bypass'], context = context)
+    permissions_copy = copy.deepcopy(permissions)
+    if 'no_bypass' in permissions_copy:
+      if isinstance(permissions_copy['no_bypass'], bool):
+        allow_bypass = not permissions_copy['no_bypass']
+      elif isinstance(permissions_copy['no_bypass'], dict):
+        allow_bypass = not self.__dispatch(permissions = permissions_copy['no_bypass'], context = context)
       else:
-        raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions['no_bypass']))
-      permissions.pop('no_bypass', None)
+        raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
+      permissions_copy.pop('no_bypass', None)
     if allow_bypass and self.__checkBypassAccess(context = context):
       access = True
     else:
-      if permissions:
-        access = self.__processOR(permissions = permissions, context = context)
+      if permissions_copy:
+        access = self.__processOR(permissions = permissions_copy, context = context)
     return access
   
   def __checkBypassAccess(self, context):
