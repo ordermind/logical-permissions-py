@@ -7,6 +7,4 @@ python:
   - "3.4"
   - "3.5"
   - "nightly"
-  - "pypy"
-  - "pypy3"
 script: python -m unittest discover tests "*.py"
