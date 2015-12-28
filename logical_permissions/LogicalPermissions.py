@@ -1,5 +1,6 @@
 from logical_permissions.interfaces.LogicalPermissionsBase import LogicalPermissionsBase
 from logical_permissions.exceptions import *
+import copy
 
 class LogicalPermissions(LogicalPermissionsBase):
   
@@ -25,7 +26,7 @@ class LogicalPermissions(LogicalPermissionsBase):
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
     if not self.typeExists(name = name):
-      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission p'.format(name))
+      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
     
     types = self.getTypes()
     types.pop(name, None)
@@ -46,26 +47,26 @@ class LogicalPermissions(LogicalPermissionsBase):
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
     if not self.typeExists(name = name):
-      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission p'.format(name))
+      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
     
     types = self.getTypes()
     return types[name]
 
   def getTypes(self):
-    return self.__types
+    return copy.copy(self.__types)
 
   def setTypes(self, types):
     if not isinstance(types, dict):
       raise InvalidArgumentTypeException('The types parameter must be a dictionary.')
     for name in types:
       if not isinstance(name, str):
-        raise InvalidArgumentValueException("The types keys must be strings.")
+        raise InvalidArgumentValueException('The types keys must be strings.')
       if not name:
         raise InvalidArgumentValueException('The name parameter cannot be empty.')
       if not hasattr(types[name], '__call__'):
         raise InvalidArgumentValueException('The types callbacks must be callables.')
 
-    self.__types = types
+    self.__types = copy.copy(types)
   
   def getBypassCallback(self):
     return self.__bypass_callback

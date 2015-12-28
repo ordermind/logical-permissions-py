@@ -104,6 +104,8 @@ class LogicalPermissionsTest(unittest.TestCase):
     types = lp.getTypes()
     self.assertEqual(types, {'test': callback})
     self.assertIs(types['test'], callback)
+    types['test2'] = lambda: true
+    self.assertFalse('test2' in lp.getTypes())
     
   # ------------LogicalPermissions::setTypes()---------------
   
@@ -132,10 +134,13 @@ class LogicalPermissionsTest(unittest.TestCase):
   def testSetTypes(self):
     lp = LogicalPermissions()
     callback = lambda: true
-    lp.setTypes(types = {'test': callback})
-    types = lp.getTypes()
-    self.assertEqual(types, {'test': callback})
-    self.assertIs(types['test'], callback)
+    types = {'test': callback}
+    lp.setTypes(types = types)
+    existing_types = lp.getTypes()
+    self.assertEqual(existing_types, {'test': callback})
+    self.assertIs(existing_types['test'], callback)
+    types['test2'] = lambda: true
+    self.assertFalse('test2' in lp.getTypes())
     
   # ------------LogicalPermissions::getBypassCallback()---------------
   
