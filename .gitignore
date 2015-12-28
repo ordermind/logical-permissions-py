@@ -1,6 +1,7 @@
 *
 !/.gitignore
 !/setup.py
+!/.travis.yml
 !/logical_permissions
 !/logical_permissions/*
 !/tests
