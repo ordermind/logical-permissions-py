@@ -248,7 +248,10 @@ class LogicalPermissionsTest(unittest.TestCase):
     def bypass_callback(context):
       return True
     lp.setBypassCallback(bypass_callback)
-    self.assertTrue(lp.checkAccess(permissions = {'no_bypass': False}, context = {}))
+    permissions = {'no_bypass': False}
+    self.assertTrue(lp.checkAccess(permissions = permissions, context = {}))
+    # Test that permission object is not changed
+    self.assertTrue('no_bypass' in permissions)
     
   def testCheckAccessNoBypassAccessBooleanDeny(self):
     lp = LogicalPermissions()
