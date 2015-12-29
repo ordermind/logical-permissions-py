@@ -1,6 +1,6 @@
-# Always prefer setuptools over distutils
+# -*- coding: UTF-8 -*-
+
 from setuptools import setup, find_packages
-# To use a consistent encoding
 from codecs import open
 from os import path
 
