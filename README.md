@@ -11,6 +11,33 @@ This is a generic library that provides support for dictionary-based permissions
 
 ### Usage
 
+```python
+# Simple example for checking user roles
+
+from logical_permissions.LogicalPermissions import LogicalPermissions
+
+lp = LogicalPermissions()
+
+def roleCallback(role, context):
+  access = False
+  if 'roles' in context.get('user', {}):
+    access = role in context['user']['roles']
+  return access
+lp.addType('role', roleCallback)
+
+permissions = {
+  'role': ['editor', 'writer'],
+}
+
+user = {
+  'id': 1,
+  'roles': ['writer'],
+}
+
+access = lp.checkAccess(permissions, {'user': user})
+print('Access granted: {0}'.format(access))
+```
+
 The main api method is [`LogicalPermissions::checkAccess()`](#checkaccess), which checks the access for a **permission tree**. A permission tree is a bundle of permissions that apply to a specific action. Let's say for example that you want to restrict access for updating a user. You'd like only users with the role "admin" to be able to update any user, but users should also be able to update their own user data (or at least some of it). With the structure this package provides, these conditions could be expressed elegantly in a permission tree as such:
 
 ```python
