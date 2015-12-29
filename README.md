@@ -11,7 +11,7 @@ This is a generic library that provides support for dictionary-based permissions
 
 ### Usage
 
-The main api method is `LogicalPermissions::checkAccess()`, which checks the access for a **permission tree**. A permission tree is a bundle of permissions that apply to a specific action. Let's say for example that you want to restrict access for updating a user. You'd like only users with the role "admin" to be able to update any user, but users should also be able to update their own user data (or at least some of it). With the structure this package provides, these conditions could be expressed elegantly in a permission tree as such:
+The main api method is [`LogicalPermissions::checkAccess()`](#checkaccess), which checks the access for a **permission tree**. A permission tree is a bundle of permissions that apply to a specific action. Let's say for example that you want to restrict access for updating a user. You'd like only users with the role "admin" to be able to update any user, but users should also be able to update their own user data (or at least some of it). With the structure this package provides, these conditions could be expressed elegantly in a permission tree as such:
 
 ```python
 {
@@ -22,10 +22,10 @@ The main api method is `LogicalPermissions::checkAccess()`, which checks the acc
 }
 ```
 
-In this example `role` and `flag` are the evaluated permission types. For this example to work you will need to register the permission types 'role' and 'flag' so that the class knows which callbacks are responsible for evaluating the respective permission types. You can do that with `LogicalPermissions::addType()`.
+In this example `role` and `flag` are the evaluated permission types. For this example to work you will need to register the permission types 'role' and 'flag' so that the class knows which callbacks are responsible for evaluating the respective permission types. You can do that with [`LogicalPermissions::addType()`](#addtype).
 
 ### Bypassing permissions
-This packages also supports rules for bypassing permissions completely for superusers. In order to use this functionality you need to register a callback with `LogicalPermissions::setBypassCallback()`. The registered callback will run on every permission check and if it returns `True`, access will automatically be granted. If you want to make exceptions you can do so by adding `'no_bypass': True` to the first level of a permission tree. You can even use permissions as conditions for `no_bypass`.
+This packages also supports rules for bypassing permissions completely for superusers. In order to use this functionality you need to register a callback with [`LogicalPermissions::setBypassCallback()`](#setbypasscallback). The registered callback will run on every permission check and if it returns `True`, access will automatically be granted. If you want to make exceptions you can do so by adding `'no_bypass': True` to the first level of a permission tree. You can even use permissions as conditions for `no_bypass`.
 
 Examples: 
 
@@ -223,3 +223,233 @@ Examples:
 
 
 ## API Documentation 
+
+## Table of Contents
+
+* [LogicalPermissions](#logicalpermissions)
+    * [addType](#addtype)
+    * [removeType](#removetype)
+    * [typeExists](#typeexists)
+    * [getTypeCallback](#gettypecallback)
+    * [getTypes](#gettypes)
+    * [setTypes](#settypes)
+    * [getBypassCallback](#getbypasscallback)
+    * [setBypassCallback](#setbypasscallback)
+    * [checkAccess](#checkaccess)
+
+## LogicalPermissions
+
+### addType
+
+Adds a permission type.
+
+```python
+LogicalPermissions::addType( name, callback )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | **string** | The name of the permission type. |
+| `callback` | **callable** | The callback that evaluates the permission type. Upon calling checkAccess() the registered callback will be passed two parameters: a permission string (such as a role) and the context dictionary passed to checkAccess(). The permission will always be a single string even if for example multiple roles are accepted. In that case the callback will be called once for each role that is to be evaluated. The callback should return a boolean which determines whether access should be granted. |
+
+
+
+
+---
+
+
+### removeType
+
+Removes a permission type.
+
+```python
+LogicalPermissions::removeType( name )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | **string** | The name of the permission type. |
+
+
+
+
+---
+
+
+### typeExists
+
+Checks whether a permission type is registered.
+
+```python
+LogicalPermissions::typeExists( name )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | **string** | The name of the permission type. |
+
+
+**Return Value:**
+
+True if the type is found or False if the type isn't found.
+
+
+
+---
+
+
+### getTypeCallback
+
+Gets the callback for a permission type.
+
+```python
+LogicalPermissions::getTypeCallback( name )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | **string** | The name of the permission type. |
+
+
+**Return Value:**
+
+Callback for the permission type.
+
+
+
+---
+
+
+### getTypes
+
+Gets all defined permission types.
+
+```python
+LogicalPermissions::getTypes(  )
+```
+
+
+
+
+
+**Return Value:**
+
+A dictionary of permission types with the structure {name: callback, name2: callback2, ...}. This dictionary is shallow copied.
+
+
+
+---
+
+
+### setTypes
+
+Overwrites all defined permission types.
+
+```python
+LogicalPermissions::setTypes( types )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `types` | **dictionary** | A dictionary of permission types with the structure {name: callback, name2: callback2, ...}. This dictionary is shallow copied. |
+
+
+
+
+---
+
+
+### getBypassCallback
+
+Gets the registered callback for access bypass evaluation.
+
+```python
+LogicalPermissions::getBypassCallback(  )
+```
+
+
+
+
+
+**Return Value:**
+
+Bypass access callback.
+
+
+
+---
+
+
+### setBypassCallback
+
+Sets the callback for access bypass evaluation.
+
+```python
+LogicalPermissions::setBypassCallback( callback )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `callback` | **callable** | The callback that evaluates access bypassing. Upon calling checkAccess() the registered bypass callback will be passed one parameter, which is the context dictionary passed to checkAccess(). It should return a boolean which determines whether bypass access should be granted. |
+
+
+
+
+---
+
+
+### checkAccess
+
+Checks access for a permission tree.
+
+```python
+LogicalPermissions::checkAccess( permissions, context )
+```
+
+
+
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `permissions` | **dictionary** | The permission tree to be evaluated. |
+| `context` | **dictionary** | A context dictionary that could for example contain the evaluated user and document. |
+
+
+**Return Value:**
+
+True if access is granted or False if access is denied.
+
+
+---
