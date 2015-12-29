@@ -2,6 +2,7 @@
 !/.gitignore
 !/setup.py
 !/.travis.yml
+!/README.md
 !/logical_permissions
 !/logical_permissions/*
 !/tests
