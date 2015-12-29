@@ -14,7 +14,7 @@ except(IOError, ImportError):
 
 setup(
   name = 'logical-permissions',
-  version = '1.0.1',
+  version = '1.0.2',
   description = 'Provides support for dictionary-based permissions with logic gates such as AND and OR.',
   long_description = long_description,
   url = 'https://github.com/Ordermind/logical-permissions-py',
