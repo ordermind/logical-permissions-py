@@ -19,7 +19,7 @@ setup(
   author = 'Kristofer Tengström',
   author_email = 'ordermind@gmail.com',
   classifiers = [
-    'Development Status :: 5 - Stable',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Programming Language :: Python :: 2',
