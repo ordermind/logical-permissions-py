@@ -89,7 +89,7 @@ class LogicalPermissions(object):
       if isinstance(permissions_copy['no_bypass'], bool):
         allow_bypass = not permissions_copy['no_bypass']
       elif isinstance(permissions_copy['no_bypass'], dict):
-        allow_bypass = not self.__dispatch(permissions = permissions_copy['no_bypass'], context = context)
+        allow_bypass = not self.__processOR(permissions = permissions_copy['no_bypass'], context = context)
       else:
         raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
       permissions_copy.pop('no_bypass', None)
