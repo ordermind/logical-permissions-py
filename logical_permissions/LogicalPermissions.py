@@ -8,6 +8,13 @@ class LogicalPermissions(object):
     self.__bypass_callback = None
 
   def addType(self, name, callback):
+    """Adds a permission type.
+
+    Args:
+      name: A string with the name of the permission type
+      callback: The callback that evaluates the permission type. Upon calling checkAccess() the registered callback will be passed two parameters: a permission string (such as a role) and the context dictionary passed to checkAccess(). The permission will always be a single string even if for example multiple roles are accepted. In that case the callback will be called once for each role that is to be evaluated. The callback should return a boolean which determines whether access should be granted.
+
+    """
     if not isinstance(name, str):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
@@ -20,6 +27,12 @@ class LogicalPermissions(object):
     self.setTypes(types = types)
   
   def removeType(self, name):
+    """Removes a permission type.
+
+    Args:
+      name: A string with the name of the permission type
+
+    """
     if not isinstance(name, str):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
@@ -32,6 +45,15 @@ class LogicalPermissions(object):
     self.setTypes(types = types)
     
   def typeExists(self, name):
+    """Checks whether a permission type is registered.
+
+    Args:
+      name: A string with the name of the permission type
+    
+    Returns:
+      True if the type is found or False if the type isn't found.
+
+    """
     if not isinstance(name, str):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
@@ -41,6 +63,15 @@ class LogicalPermissions(object):
     return name in types
 
   def getTypeCallback(self, name):
+    """Gets the callback for a permission type.
+
+    Args:
+      name: A string with the name of the permission type
+    
+    Returns:
+      Callback for the permission type.
+
+    """
     if not isinstance(name, str):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
@@ -52,9 +83,21 @@ class LogicalPermissions(object):
     return types[name]
 
   def getTypes(self):
+    """Gets all defined permission types.
+
+    Returns:
+      A dictionary of permission types with the structure {name: callback, name2: callback2, ...}. This dictionary is shallow copied.
+
+    """
     return copy.copy(self.__types)
 
   def setTypes(self, types):
+    """Overwrites all defined permission types.
+
+    Args:
+      types: A dictionary of permission types with the structure {name: callback, name2: callback2, ...}. This dictionary is shallow copied.
+
+    """
     if not isinstance(types, dict):
       raise InvalidArgumentTypeException('The types parameter must be a dictionary.')
     for name in types:
@@ -68,15 +111,37 @@ class LogicalPermissions(object):
     self.__types = copy.copy(types)
   
   def getBypassCallback(self):
+    """Gets the current bypass access callback.
+
+    Returns:
+      Callback for checking access bypass.
+
+    """
     return self.__bypass_callback
     
   def setBypassCallback(self, callback):
+    """Sets the bypass access callback.
+
+    Args:
+      callback: The callback that evaluates access bypassing. Upon calling checkAccess() the registered bypass callback will be passed one parameter, which is the context dictionary passed to checkAccess(). It should return a boolean which determines whether bypass access should be granted.
+
+    """
     if not hasattr(callback, '__call__'):
       raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
     
     self.__bypass_callback = callback
 
   def checkAccess(self, permissions, context):
+    """Checks access for a permission tree.
+
+    Args:
+      permissions: A dictionary of the permission tree to be evaluated
+      context: A context dictionary that could for example contain the evaluated user and document.
+      
+    Returns:
+      True if access is granted or False if access is denied.
+
+    """
     if not isinstance(permissions, dict):
       raise InvalidArgumentTypeException('The permissions parameter must be a dictionary.')
     if not isinstance(context, dict):
