@@ -211,7 +211,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = {}, context = [])
       
-  def testCheckAccessCheckContextPassing(self):
+  def testCheckAccessBypassAccessCheckContextPassing(self):
     lp = LogicalPermissions()
     user = {'id': 1}
     def bypass_callback(context):
