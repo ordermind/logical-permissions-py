@@ -455,6 +455,27 @@ LogicalPermissions::setBypassCallback( callback )
 ---
 
 
+### getValidPermissionKeys
+
+Gets all keys that can be part of a permission tree.
+
+```python
+LogicalPermissions::getValidPermissionKeys(  )
+```
+
+
+
+
+
+**Return Value:**
+
+List of valid permission keys
+
+
+
+---
+
+
 ### checkAccess
 
 Checks access for a permission tree.
