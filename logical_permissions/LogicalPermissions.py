@@ -130,6 +130,15 @@ class LogicalPermissions(object):
       raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
     
     self.__bypass_callback = callback
+  
+  def getValidPermissionKeys(self):
+    """Gets all keys that can be part of a permission tree.
+    
+    Returns:
+      List of valid permission keys
+      
+    """
+    return self.__getCorePermissionKeys() + list(self.getTypes())
 
   def checkAccess(self, permissions, context):
     """Checks access for a permission tree.
@@ -164,6 +173,9 @@ class LogicalPermissions(object):
       if permissions_copy:
         access = self.__processOR(permissions = permissions_copy, context = context)
     return access
+  
+  def __getCorePermissionKeys(self):
+    return ['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT']
   
   def __checkBypassAccess(self, context):
     bypass_access = False

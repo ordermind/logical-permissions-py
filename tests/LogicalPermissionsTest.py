@@ -161,6 +161,35 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setBypassCallback(callback = callback)
     self.assertIs(lp.getBypassCallback(), callback)
   
+  # ------------LogicalPermissions:getValidPermissionKeys()------------
+  
+  def testGetValidPermissionKeys(self):
+    lp = LogicalPermissions()
+    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT']))
+    def flag_callback(flag, context):
+      access = False
+      if flag is 'testflag':
+        if 'testflag' in context.get('user', {}):
+          access = context['user']['testflag']
+      return access
+    def role_callback(role, context):
+      access = False
+      if 'roles' in context.get('user', {}):
+        access = role in context['user']['roles']
+      return access
+    def misc_callback(item, context):
+      access = False
+      if item in context.get('user', {}):
+        access = context['user'][item]
+      return access
+    types = {
+      'flag': flag_callback,
+      'role': role_callback,
+      'misc': misc_callback,
+    }
+    lp.setTypes(types)
+    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'flag', 'role', 'misc']))
+  
   # ------------LogicalPermissions::checkAccess()---------------
   
   def testCheckAccessParamPermissionsWrongType(self):
