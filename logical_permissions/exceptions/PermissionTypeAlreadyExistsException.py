@@ -1,4 +1,4 @@
 from logical_permissions.exceptions import InvalidArgumentValueException
 
-class PermissionTypeNotRegisteredException(InvalidArgumentValueException):
+class PermissionTypeAlreadyExistsException(InvalidArgumentValueException):
   pass

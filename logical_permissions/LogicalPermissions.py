@@ -19,6 +19,10 @@ class LogicalPermissions(object):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
+    if name in self.__getCorePermissionKeys():
+      raise InvalidArgumentValueException('The name parameter has the illegal value "{0}". It cannot be one of the following values: {1}'.format(name, ','.join(self.__getCorePermissionKeys())))
+    if self.typeExists(name = name):
+      raise PermissionTypeAlreadyExistsException('The type "{0}" already exists! If you want to change the callback for an existing type, please use LogicalPermissions:setTypeCallback().'.format(name))
     if not hasattr(callback, '__call__'):
       raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
 
@@ -125,7 +129,9 @@ class LogicalPermissions(object):
       if not isinstance(name, str):
         raise InvalidArgumentValueException('The types keys must be strings.')
       if not name:
-        raise InvalidArgumentValueException('The name parameter cannot be empty.')
+        raise InvalidArgumentValueException('The name for a type cannot be empty.')
+      if name in self.__getCorePermissionKeys():
+        raise InvalidArgumentValueException('The name for a type has the illegal value "{0}". It cannot be one of the following values: {1}'.format(name, ','.join(self.__getCorePermissionKeys())))
       if not hasattr(types[name], '__call__'):
         raise InvalidArgumentValueException('The types callbacks must be callables.')
 

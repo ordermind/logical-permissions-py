@@ -19,7 +19,18 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       lp.addType(name = '', callback = lambda: true)
-      
+
+  def testAddTypeParamNameIsCoreKey(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.addType(name = 'AND', callback = lambda: true)
+
+  def testAddTypeParamNameExists(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(PermissionTypeAlreadyExistsException):
+      lp.addType(name = 'test', callback = lambda: true)
+      lp.addType(name = 'test', callback = lambda: true)
+
   def testAddTypeParamCallbackWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
@@ -156,7 +167,13 @@ class LogicalPermissionsTest(unittest.TestCase):
     callback = lambda: true
     with self.assertRaises(InvalidArgumentValueException):
       lp.setTypes(types = {'': callback})
-      
+  
+  def testSetTypesParamTypesNameIsCoreKey(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(InvalidArgumentValueException):
+      callback = lambda: true
+      lp.setTypes(types = {'AND': callback})
+ 
   def testSetTypesParamTypesCallbackWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
