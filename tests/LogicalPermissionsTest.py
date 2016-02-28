@@ -94,6 +94,37 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.addType(name = 'test', callback = callback)
     self.assertIs(lp.getTypeCallback(name = 'test'), callback)
     
+  # ------------LogicalPermissions::setTypeCallback()---------------
+  
+  def testSetTypeCallbackParamNameWrongType(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(InvalidArgumentTypeException):
+      lp.setTypeCallback(name = 0, callback = 0)
+      
+  def testSetTypeCallbackParamNameEmpty(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.setTypeCallback(name = '', callback = 0)
+      
+  def testSetTypeCallbackUnregisteredType(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(PermissionTypeNotRegisteredException):
+      lp.setTypeCallback(name = 'test', callback = 0)
+      
+  def testSetTypeCallbackParamCallbackWrongType(self):
+    lp = LogicalPermissions()
+    lp.addType(name = 'test', callback = lambda: true)
+    with self.assertRaises(InvalidArgumentTypeException):
+      lp.setTypeCallback(name = 'test', callback = 0)
+      
+  def testSetTypeCallback(self):
+    lp = LogicalPermissions()
+    lp.addType(name = 'test', callback = lambda: true)
+    callback = lambda: true
+    self.assertIsNot(lp.getTypeCallback(name = 'test'), callback)
+    lp.setTypeCallback(name = 'test', callback = callback)
+    self.assertIs(lp.getTypeCallback(name = 'test'), callback)
+    
   # ------------LogicalPermissions::getTypes()---------------
   
   def testGetTypes(self):

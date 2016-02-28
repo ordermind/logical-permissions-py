@@ -81,6 +81,27 @@ class LogicalPermissions(object):
     
     types = self.getTypes()
     return types[name]
+  
+  def setTypeCallback(self, name, callback):
+    """Changes the callback for an existing permission type.
+    
+    Args:
+      name: A string with the name of the permission type
+      callback: The callback that evaluates the permission type. Upon calling checkAccess() the registered callback will be passed two parameters: a permission string (such as a role) and the context dictionary passed to checkAccess(). The permission will always be a single string even if for example multiple roles are accepted. In that case the callback will be called once for each role that is to be evaluated. The callback should return a boolean which determines whether access should be granted.
+      
+    """
+    if not isinstance(name, str):
+      raise InvalidArgumentTypeException('The name parameter must be a string.')
+    if not name:
+      raise InvalidArgumentValueException('The name parameter cannot be empty.')
+    if not self.typeExists(name = name):
+      raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
+    if not hasattr(callback, '__call__'):
+      raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
+    
+    types = self.getTypes()
+    types[name] = callback
+    self.setTypes(types = types)
 
   def getTypes(self):
     """Gets all defined permission types.
