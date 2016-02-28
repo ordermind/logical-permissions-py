@@ -503,7 +503,7 @@ List of valid permission keys
 Checks access for a permission tree.
 
 ```python
-LogicalPermissions::checkAccess( permissions, context )
+LogicalPermissions::checkAccess( permissions, context, allow_bypass = True )
 ```
 
 
@@ -515,6 +515,7 @@ LogicalPermissions::checkAccess( permissions, context )
 |-----------|------|-------------|
 | `permissions` | **dictionary** | The permission tree to be evaluated. |
 | `context` | **dictionary** | A context dictionary that could for example contain the evaluated user and document. |
+| `allow_bypass` | **boolean** | (optional) Determines whether bypassing access should be allowed. Default value is True. |
 
 
 **Return Value:**

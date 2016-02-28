@@ -288,6 +288,11 @@ class LogicalPermissionsTest(unittest.TestCase):
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = {}, context = [])
       
+  def testCheckAccessParamAllowBypassWrongType(self):
+    lp = LogicalPermissions()
+    with self.assertRaises(InvalidArgumentTypeException):
+      lp.checkAccess(permissions = {}, context = {}, allow_bypass = 'test')
+      
   def testCheckAccessBypassAccessCheckContextPassing(self):
     lp = LogicalPermissions()
     user = {'id': 1}
@@ -319,6 +324,13 @@ class LogicalPermissionsTest(unittest.TestCase):
       return False
     lp.setBypassCallback(bypass_callback)
     self.assertFalse(lp.checkAccess(permissions = {}, context = {}))
+    
+  def testCheckAccessBypassAccessDeny2(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    self.assertFalse(lp.checkAccess(permissions = {}, context = {}, allow_bypass = False))
     
   def testCheckAccessNoBypassWrongType(self):
     lp = LogicalPermissions()

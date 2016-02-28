@@ -167,12 +167,13 @@ class LogicalPermissions(object):
     """
     return self.__getCorePermissionKeys() + list(self.getTypes())
 
-  def checkAccess(self, permissions, context):
+  def checkAccess(self, permissions, context, allow_bypass = True):
     """Checks access for a permission tree.
 
     Args:
       permissions: A dictionary of the permission tree to be evaluated
       context: A context dictionary that could for example contain the evaluated user and document.
+      allow_bypass (optional): Determines whether bypassing access should be allowed. Default value is True.
       
     Returns:
       True if access is granted or False if access is denied.
@@ -182,18 +183,20 @@ class LogicalPermissions(object):
       raise InvalidArgumentTypeException('The permissions parameter must be a dictionary.')
     if not isinstance(context, dict):
       raise InvalidArgumentTypeException('The context parameter must be an dictionary.')
+    if not isinstance(allow_bypass, bool):
+      raise InvalidArgumentTypeException('The allow_bypass parameter must be a boolean.')
     
     access = False
-    allow_bypass = True
     permissions_copy = copy.deepcopy(permissions)
-    if 'no_bypass' in permissions_copy:
-      if isinstance(permissions_copy['no_bypass'], bool):
-        allow_bypass = not permissions_copy['no_bypass']
-      elif isinstance(permissions_copy['no_bypass'], dict):
-        allow_bypass = not self.__processOR(permissions = permissions_copy['no_bypass'], context = context)
-      else:
-        raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
-      permissions_copy.pop('no_bypass', None)
+    if allow_bypass:
+      if 'no_bypass' in permissions_copy:
+        if isinstance(permissions_copy['no_bypass'], bool):
+          allow_bypass = not permissions_copy['no_bypass']
+        elif isinstance(permissions_copy['no_bypass'], dict):
+          allow_bypass = not self.__processOR(permissions = permissions_copy['no_bypass'], context = context)
+        else:
+          raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
+        permissions_copy.pop('no_bypass', None)
     if allow_bypass and self.__checkBypassAccess(context = context):
       access = True
     else:
