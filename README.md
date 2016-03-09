@@ -258,10 +258,12 @@ Examples:
     * [removeType](#removetype)
     * [typeExists](#typeexists)
     * [getTypeCallback](#gettypecallback)
+    * [setTypeCallback](#settypecallback)
     * [getTypes](#gettypes)
     * [setTypes](#settypes)
     * [getBypassCallback](#getbypasscallback)
     * [setBypassCallback](#setbypasscallback)
+    * [getValidPermissionKeys](#getvalidpermissionkeys)
     * [checkAccess](#checkaccess)
 
 ## LogicalPermissions
