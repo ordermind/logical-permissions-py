@@ -3,6 +3,7 @@
 !/setup.py
 !/.travis.yml
 !/README.md
+!/LICENSE
 !/logical_permissions
 !/logical_permissions/*
 !/tests
