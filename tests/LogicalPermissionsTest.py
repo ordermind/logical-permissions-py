@@ -243,7 +243,7 @@ class LogicalPermissionsTest(unittest.TestCase):
   def testCheckAccessParamPermissionsWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
-      lp.checkAccess(permissions = [])
+      lp.checkAccess(permissions = 50)
 
   def testCheckAccessParamPermissionsWrongPermissionType(self):
     lp = LogicalPermissions()
@@ -1425,6 +1425,156 @@ class LogicalPermissionsTest(unittest.TestCase):
     user['roles'] = ['editor']
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
 
+  def testCheckAccessBoolTRUEIllegalDescendant(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'role': [True]
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+
+  def testCheckAccessBoolTRUE(self):
+    lp = LogicalPermissions()
+    permissions = True
+    self.assertTrue(lp.checkAccess(permissions))
+
+  def testCheckAccessBoolTRUEList(self):
+    lp = LogicalPermissions()
+    permissions = [
+      True
+    ]
+    self.assertTrue(lp.checkAccess(permissions))
+
+  def testCheckAccessBoolFALSEIllegalDescendant(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'role': [False]
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+
+  def testCheckAccessBoolFALSE(self):
+    lp = LogicalPermissions()
+    permissions = False
+    self.assertFalse(lp.checkAccess(permissions))
+
+  def testCheckAccessBoolFALSEList(self):
+    lp = LogicalPermissions()
+    permissions = [False]
+    self.assertFalse(lp.checkAccess(permissions))
+
+  def testCheckAccessBoolFALSEBypass(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    permissions = [False]
+    self.assertTrue(lp.checkAccess(permissions))
+
+  def testCheckAccessBoolFALSENoBypass(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    permissions = {
+      0: False,
+      'no_bypass': True
+    }
+    self.assertFalse(lp.checkAccess(permissions))
+
+  def testCheckAccessStringTRUEIllegalChildren(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'TRUE': False
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+    permissions = {
+      'TRUE': []
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+    permissions = {
+      'TRUE': {}
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+
+  def testCheckAccessStringTRUEIllegalDescendant(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'role': ['TRUE']
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+
+  def testCheckAccessStringTRUE(self):
+    lp = LogicalPermissions()
+    permissions = 'TRUE'
+    self.assertTrue(lp.checkAccess(permissions))
+
+  def testCheckAccessStringTRUEList(self):
+    lp = LogicalPermissions()
+    permissions = ['TRUE']
+    self.assertTrue(lp.checkAccess(permissions))
+
+  def testCheckAccessStringFALSEIllegalChildren(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'FALSE': False
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+    permissions = {
+      'FALSE': []
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+    permissions = {
+      'FALSE': {}
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+
+  def testCheckAccessStringFALSEIllegalDescendant(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'role': ['FALSE']
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions)
+
+  def testCheckAccessStringFALSE(self):
+    lp = LogicalPermissions()
+    permissions = 'FALSE'
+    self.assertFalse(lp.checkAccess(permissions))
+
+  def testCheckAccessStringFALSEList(self):
+    lp = LogicalPermissions()
+    permissions = ['FALSE']
+    self.assertFalse(lp.checkAccess(permissions))
+
+  def testCheckAccessStringFALSEBypass(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    permissions = [
+      'FALSE'
+    ]
+    self.assertTrue(lp.checkAccess(permissions))
+
+  def testCheckAccessStringFALSENoBypass(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    permissions = {
+      0: 'FALSE',
+      'no_bypass': True
+    }
+    self.assertFalse(lp.checkAccess(permissions))
+
   def testCheckAccessNestedLogic(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1447,7 +1597,9 @@ class LogicalPermissionsTest(unittest.TestCase):
             ]
           }
         }
-      }
+      },
+      0: False,
+      1: 'FALSE'
     }
     user = {
       'id': 1,
@@ -1482,7 +1634,9 @@ class LogicalPermissionsTest(unittest.TestCase):
               ]
             }
           }
-        }
+        },
+        0: True,
+        1: 'TRUE'
       }
     }
     user = {
