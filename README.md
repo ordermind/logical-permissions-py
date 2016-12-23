@@ -1,4 +1,4 @@
-<a href="https://travis-ci.org/Ordermind/logical-permissions-py" target="_blank"><img src="https://travis-ci.org/Ordermind/logical-permissions-py.svg?branch=master" /></a>
+<a href="https:# travis-ci.org/Ordermind/logical-permissions-py" target="_blank"><img src="https:# travis-ci.org/Ordermind/logical-permissions-py.svg?branch=master" /></a>
 # logical-permissions
 
 This is a generic library that provides support for dictionary-based permissions with logic gates such as AND and OR. You can register any kind of permission types such as roles and flags. The idea with this library is to be an ultra-flexible foundation that can be used by any framework. It supports python 2 and 3.
@@ -54,7 +54,7 @@ In this example `role` and `flag` are the evaluated permission types. For this e
 ### Bypassing permissions
 This packages also supports rules for bypassing permissions completely for superusers. In order to use this functionality you need to register a callback with [`LogicalPermissions::setBypassCallback()`](#setbypasscallback). The registered callback will run on every permission check and if it returns `True`, access will automatically be granted. If you want to make exceptions you can do so by adding `'no_bypass': True` to the first level of a permission tree. You can even use permissions as conditions for `no_bypass`.
 
-Examples: 
+Examples:
 
 ```python
 # Disallow access bypassing
@@ -177,7 +177,7 @@ is interpreted exactly the same way as this permission tree:
 
 A logic NOR gate returns True if all of its children returns False. Otherwise it returns False.
 
-Examples: 
+Examples:
 
 ```python
 # Allow access if the user is neither an editor nor a sales person
@@ -248,8 +248,61 @@ Examples:
 }
 ```
 
+## Boolean Permissions
 
-## API Documentation 
+Boolean permissions are a special kind of permission. They can be used for allowing or disallowing access for everyone (except those with bypass access). They are not allowed as descendants to a permission type and they may not contain children. Both true booleans and booleans represented as uppercase strings are supported. Of course a simpler way to allow access to everyone is to not define any permissions at all for that action, but it might be nice sometimes to explicitly allow access for everyone.
+
+Examples:
+
+```python
+# Allow access for anyone
+[
+  True
+]
+
+# Using a boolean without a list is also permitted
+True
+```
+
+```python
+# Example with string representation
+[
+  'TRUE'
+]
+
+# Using a string representation without a list is also permitted
+'TRUE'
+```
+
+```python
+# Deny access for everyone except those with bypass access
+[
+  False
+]
+
+# Using a boolean without a list is also permitted
+False
+```
+
+```python
+# Example with string representation
+[
+  'FALSE'
+]
+
+# Using a string representation without a list is also permitted
+'FALSE'
+```
+
+```python
+# Deny access for everyone including those with bypass access
+{
+  0: False,
+  'no_bypass' => True
+}
+```
+
+## API Documentation
 
 ## Table of Contents
 
@@ -505,7 +558,7 @@ List of valid permission keys
 Checks access for a permission tree.
 
 ```python
-LogicalPermissions::checkAccess( permissions, context, allow_bypass = True )
+LogicalPermissions::checkAccess( permissions, context = {}, allow_bypass = True )
 ```
 
 
@@ -515,8 +568,8 @@ LogicalPermissions::checkAccess( permissions, context, allow_bypass = True )
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `permissions` | **dictionary** | The permission tree to be evaluated. |
-| `context` | **dictionary** | A context dictionary that could for example contain the evaluated user and document. |
+| `permissions` | **mixed** | The permission tree to be evaluated. |
+| `context` | **dictionary** | (optional) A context dictionary that could for example contain the evaluated user and document. Default value is an empty dictionary. |
 | `allow_bypass` | **boolean** | (optional) Determines whether bypassing access should be allowed. Default value is True. |
 
 

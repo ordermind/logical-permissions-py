@@ -171,7 +171,7 @@ class LogicalPermissions(object):
     """Checks access for a permission tree.
 
     Args:
-      permissions: A dictionary or list of the permission tree to be evaluated
+      permissions: A dictionary, list, string or boolean of the permission tree to be evaluated
       context (optional): A context dictionary that could for example contain the evaluated user and document. Default value is an empty dictionary.
       allow_bypass (optional): Determines whether bypassing access should be allowed. Default value is True.
 
