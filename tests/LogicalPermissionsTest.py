@@ -248,7 +248,7 @@ class LogicalPermissionsTest(unittest.TestCase):
   def testCheckAccessParamPermissionsWrongPermissionType(self):
     lp = LogicalPermissions()
     permissions = {
-      'flag': True,
+      'flag': 50,
     }
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = permissions)

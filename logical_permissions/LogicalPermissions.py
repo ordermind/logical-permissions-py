@@ -216,46 +216,62 @@ class LogicalPermissions(object):
     return bypass_access
 
   def __dispatch(self, permissions, context, type = None):
-    access = False
     if permissions:
+      if isinstance(permissions, bool):
+        if permissions == True:
+          if type is not None:
+            raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
+          return True
+        if permissions == False:
+          if type is not None:
+            raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
+          return False
       if isinstance(permissions, str):
-        access = self.__externalAccessCheck(permission = permissions, context = context, type = type)
-      elif isinstance(permissions, list):
-        if len(permissions) > 0:
-          access = self.__processOR(permissions = permissions, context = context, type = type)
-      elif isinstance(permissions, dict):
+        if permissions == 'TRUE':
+          if type is not None:
+            raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
+          return True
+        if permissions == 'FALSE':
+          if type is not None:
+            raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
+          return False
+        return self.__externalAccessCheck(permission = permissions, context = context, type = type)
+      if isinstance(permissions, list) and len(permissions) > 0:
+        return self.__processOR(permissions = permissions, context = context, type = type)
+      if isinstance(permissions, dict):
         if len(permissions) == 1:
           key = list(permissions.keys())[0]
           value = permissions[key]
+          if key is 'no_bypass':
+            raise InvalidArgumentValueException('The no_bypass key must be placed highest in the permission hierarchy. Evaluated permissions: {}'.format(permissions))
           if key is 'AND':
-            access = self.__processAND(permissions = value, context = context, type = type)
-          elif key is 'NAND':
-            access = self.__processNAND(permissions = value, context = context, type = type)
-          elif key is 'OR':
-            access = self.__processOR(permissions = value, context = context, type = type)
-          elif key is 'NOR':
-            access = self.__processNOR(permissions = value, context = context, type = type)
-          elif key is 'XOR':
-            access = self.__processXOR(permissions = value, context = context, type = type)
-          elif key is 'NOT':
-            access = self.__processNOT(permissions = value, context = context, type = type)
-          else:
-            if 'long' not in globals(): # Python 3 compability
-              long = int
-            if not isinstance(key, (int, long, float)):
-              if type is None:
-                type = key
-              else:
-                raise InvalidArgumentValueException('You cannot put a permission type as a descendant to another permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
-            if isinstance(value, (dict, list)):
-              access = self.__processOR(permissions = value, context = context, type = type)
-            else:
-              access = self.__dispatch(permissions = value, context = context, type = type)
-        elif len(permissions) > 1:
-          access = self.__processOR(permissions = permissions, context = context, type = type)
-      else:
-        raise InvalidArgumentTypeException('Permissions must either be a string, a dictionary or a list. Evaluated permissions: {0}'.format(permissions))
-    return access
+            return self.__processAND(permissions = value, context = context, type = type)
+          if key is 'NAND':
+            return self.__processNAND(permissions = value, context = context, type = type)
+          if key is 'OR':
+            return self.__processOR(permissions = value, context = context, type = type)
+          if key is 'NOR':
+            return self.__processNOR(permissions = value, context = context, type = type)
+          if key is 'XOR':
+            return self.__processXOR(permissions = value, context = context, type = type)
+          if key is 'NOT':
+            return self.__processNOT(permissions = value, context = context, type = type)
+          if key is 'TRUE' or key is 'FALSE':
+            raise InvalidArgumentValueException('A boolean permission cannot have children. Evaluated permissions: {}'.format(permissions))
+
+          if 'long' not in globals(): # Python 3 compability
+            long = int
+          if not isinstance(key, (int, long, float)):
+            if type is not None:
+              raise InvalidArgumentValueException('You cannot put a permission type as a descendant to another permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
+            type = key
+
+          if isinstance(value, (dict, list)):
+            return self.__processOR(permissions = value, context = context, type = type)
+          return self.__dispatch(permissions = value, context = context, type = type)
+        if len(permissions) > 1:
+          return self.__processOR(permissions = permissions, context = context, type = type)
+      raise InvalidArgumentTypeException('Permissions must either be a boolean, a string, a dictionary or a list. Evaluated permissions: {0}'.format(permissions))
 
   def __processAND(self, permissions, context, type = None):
     access = False
