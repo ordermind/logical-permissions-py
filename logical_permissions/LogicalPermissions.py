@@ -292,8 +292,7 @@ class LogicalPermissions(object):
     else:
       raise InvalidValueForLogicGateException('The value of a NAND gate must be a list or a dict. Current value: {0}'.format(permissions))
 
-    access = not self.__processAND(permissions = permissions, context = context, type = type)
-    return access
+    return not self.__processAND(permissions = permissions, context = context, type = type)
 
   def __processOR(self, permissions, context, type = None):
     access = False
@@ -328,8 +327,7 @@ class LogicalPermissions(object):
     else:
       raise InvalidValueForLogicGateException('The value of a NOR gate must be a list or a dict. Current value: {0}'.format(permissions))
 
-    access = not self.__processOR(permissions = permissions, context = context, type = type)
-    return access
+    return not self.__processOR(permissions = permissions, context = context, type = type)
 
   def __processXOR(self, permissions, context, type = None):
     access = False
@@ -376,8 +374,7 @@ class LogicalPermissions(object):
     else:
       raise InvalidValueForLogicGateException('The value of a NOT gate must either be a dict or a string. Current value: {0}'.format(permissions))
 
-    access = not self.__dispatch(permissions = permissions, context = context, type = type)
-    return access
+    return not self.__dispatch(permissions = permissions, context = context, type = type)
 
   def __externalAccessCheck(self, permission, context, type):
     if not self.typeExists(type):
