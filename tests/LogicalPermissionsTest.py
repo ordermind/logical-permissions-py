@@ -7,14 +7,14 @@ class LogicalPermissionsTest(unittest.TestCase):
   def testCreation(self):
     lp = LogicalPermissions()
     self.assertTrue(type(lp) is LogicalPermissions)
-    
+
   # -----------LogicalPermissions::addType()-------------
-  
+
   def testAddTypeParamNameWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.addType(name = 0, callback = lambda: true)
-      
+
   def testAddTypeParamNameEmpty(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
@@ -35,99 +35,99 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.addType(name = 'test', callback = 0)
-      
+
   def testAddType(self):
     lp = LogicalPermissions()
     lp.addType(name = 'test', callback = lambda: true)
     self.assertTrue(lp.typeExists(name = 'test'))
-    
+
   # -------------LogicalPermissions::removeType()--------------
-  
+
   def testRemoveTypeParamNameWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.removeType(name = 0)
-      
+
   def testRemoveTypeParamNameEmpty(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       lp.removeType(name = '')
-      
+
   def testRemoveTypeUnregisteredType(self):
     lp = LogicalPermissions()
     with self.assertRaises(PermissionTypeNotRegisteredException):
       lp.removeType(name = 'test')
-      
+
   def testRemoveType(self):
     lp = LogicalPermissions()
     lp.addType(name = 'test', callback = lambda: true)
     lp.removeType(name = 'test')
     self.assertFalse(lp.typeExists(name = 'test'))
-    
+
   # ------------LogicalPermissions::typeExists()---------------
-  
+
   def testTypeExistsParamNameWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.typeExists(name = 0)
-      
+
   def testTypeExistsParamNameEmpty(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       lp.typeExists(name = '')
-      
+
   def testTypeExists(self):
     lp = LogicalPermissions()
     self.assertFalse(lp.typeExists('test'))
     lp.addType(name = 'test', callback = lambda: true)
     self.assertTrue(lp.typeExists(name = 'test'))
-    
+
   # ------------LogicalPermissions::getTypeCallback()---------------
-  
+
   def testGetTypeCallbackParamNameWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.getTypeCallback(name = 0)
-      
+
   def testGetTypeCallbackParamNameEmpty(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       lp.getTypeCallback(name = '')
-      
+
   def testGetTypeCallbackUnregisteredType(self):
     lp = LogicalPermissions()
     with self.assertRaises(PermissionTypeNotRegisteredException):
       lp.getTypeCallback(name = 'test')
-      
+
   def testGetTypeCallback(self):
     lp = LogicalPermissions()
     callback = lambda: true
     lp.addType(name = 'test', callback = callback)
     self.assertIs(lp.getTypeCallback(name = 'test'), callback)
-    
+
   # ------------LogicalPermissions::setTypeCallback()---------------
-  
+
   def testSetTypeCallbackParamNameWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.setTypeCallback(name = 0, callback = 0)
-      
+
   def testSetTypeCallbackParamNameEmpty(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       lp.setTypeCallback(name = '', callback = 0)
-      
+
   def testSetTypeCallbackUnregisteredType(self):
     lp = LogicalPermissions()
     with self.assertRaises(PermissionTypeNotRegisteredException):
       lp.setTypeCallback(name = 'test', callback = 0)
-      
+
   def testSetTypeCallbackParamCallbackWrongType(self):
     lp = LogicalPermissions()
     lp.addType(name = 'test', callback = lambda: true)
     with self.assertRaises(InvalidArgumentTypeException):
       lp.setTypeCallback(name = 'test', callback = 0)
-      
+
   def testSetTypeCallback(self):
     lp = LogicalPermissions()
     lp.addType(name = 'test', callback = lambda: true)
@@ -135,9 +135,9 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertIsNot(lp.getTypeCallback(name = 'test'), callback)
     lp.setTypeCallback(name = 'test', callback = callback)
     self.assertIs(lp.getTypeCallback(name = 'test'), callback)
-    
+
   # ------------LogicalPermissions::getTypes()---------------
-  
+
   def testGetTypes(self):
     lp = LogicalPermissions()
     self.assertEqual(lp.getTypes(), {})
@@ -148,37 +148,37 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertIs(types['test'], callback)
     types['test2'] = lambda: true
     self.assertFalse('test2' in lp.getTypes())
-    
+
   # ------------LogicalPermissions::setTypes()---------------
-  
+
   def testSetTypesParamTypesWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.setTypes(types = 55)
-      
+
   def testSetTypesParamTypesNameWrongType(self):
     lp = LogicalPermissions()
     callback = lambda: true
     with self.assertRaises(InvalidArgumentValueException):
       lp.setTypes(types = {0: callback})
-      
+
   def testSetTypesParamTypesNameEmpty(self):
     lp = LogicalPermissions()
     callback = lambda: true
     with self.assertRaises(InvalidArgumentValueException):
       lp.setTypes(types = {'': callback})
-  
+
   def testSetTypesParamTypesNameIsCoreKey(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       callback = lambda: true
       lp.setTypes(types = {'AND': callback})
- 
+
   def testSetTypesParamTypesCallbackWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentValueException):
       lp.setTypes(types = {'test': 'hej'})
-      
+
   def testSetTypes(self):
     lp = LogicalPermissions()
     callback = lambda: true
@@ -189,31 +189,31 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertIs(existing_types['test'], callback)
     types['test2'] = lambda: true
     self.assertFalse('test2' in lp.getTypes())
-    
+
   # ------------LogicalPermissions::getBypassCallback()---------------
-  
+
   def testGetBypassCallback(self):
     lp = LogicalPermissions()
     self.assertIsNone(lp.getBypassCallback())
-  
+
   # ------------LogicalPermissions::setBypassCallback()---------------
-   
+
   def testSetBypassCallbackParamCallbackWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.setBypassCallback(callback = 'hej')
-    
+
   def testSetBypassCallback(self):
     lp = LogicalPermissions()
     callback = lambda: true
     lp.setBypassCallback(callback = callback)
     self.assertIs(lp.getBypassCallback(), callback)
-  
+
   # ------------LogicalPermissions:getValidPermissionKeys()------------
-  
+
   def testGetValidPermissionKeys(self):
     lp = LogicalPermissions()
-    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT']))
+    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']))
     def flag_callback(flag, context):
       access = False
       if flag is 'testflag':
@@ -236,15 +236,15 @@ class LogicalPermissionsTest(unittest.TestCase):
       'misc': misc_callback,
     }
     lp.setTypes(types)
-    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'flag', 'role', 'misc']))
-  
+    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE', 'flag', 'role', 'misc']))
+
   # ------------LogicalPermissions::checkAccess()---------------
-  
+
   def testCheckAccessParamPermissionsWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = [], context = {})
-      
+
   def testCheckAccessParamPermissionsWrongPermissionType(self):
     lp = LogicalPermissions()
     permissions = {
@@ -252,7 +252,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = permissions, context = {})
-  
+
   def testCheckAccessParamPermissionsNestedTypes(self):
     lp = LogicalPermissions()
     # Directly nested
@@ -263,7 +263,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidArgumentValueException):
       lp.checkAccess(permissions = permissions, context = {})
-      
+
     # Indirectly nested
     permissions = {
       'flag': {
@@ -274,7 +274,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidArgumentValueException):
       lp.checkAccess(permissions = permissions, context = {})
-      
+
   def testCheckAccessParamPermissionsUnregisteredType(self):
     lp = LogicalPermissions()
     permissions = {
@@ -282,17 +282,17 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(PermissionTypeNotRegisteredException):
       lp.checkAccess(permissions = permissions, context = {})
-      
+
   def testCheckAccessParamContextWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = {}, context = [])
-      
+
   def testCheckAccessParamAllowBypassWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
       lp.checkAccess(permissions = {}, context = {}, allow_bypass = 'test')
-      
+
   def testCheckAccessBypassAccessCheckContextPassing(self):
     lp = LogicalPermissions()
     user = {'id': 1}
@@ -302,7 +302,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       return True
     lp.setBypassCallback(bypass_callback)
     lp.checkAccess(permissions = {}, context = {'user': user})
-    
+
   def testCheckAccessBypassAccessWrongReturnType(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
@@ -310,7 +310,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setBypassCallback(bypass_callback)
     with self.assertRaises(InvalidCallbackReturnTypeException):
       lp.checkAccess(permissions = {}, context = {})
-    
+
   def testCheckAccessBypassAccessAllow(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
@@ -324,14 +324,14 @@ class LogicalPermissionsTest(unittest.TestCase):
       return False
     lp.setBypassCallback(bypass_callback)
     self.assertFalse(lp.checkAccess(permissions = {}, context = {}))
-    
+
   def testCheckAccessBypassAccessDeny2(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
       return True
     lp.setBypassCallback(bypass_callback)
     self.assertFalse(lp.checkAccess(permissions = {}, context = {}, allow_bypass = False))
-    
+
   def testCheckAccessNoBypassWrongType(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
@@ -339,7 +339,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setBypassCallback(bypass_callback)
     with self.assertRaises(InvalidArgumentValueException):
       lp.checkAccess(permissions = {'no_bypass': 'test'}, context = {})
-    
+
   def testCheckAccessNoBypassAccessBooleanAllow(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
@@ -349,14 +349,14 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertTrue(lp.checkAccess(permissions = permissions, context = {}))
     # Test that permission dict is not changed
     self.assertTrue('no_bypass' in permissions)
-    
+
   def testCheckAccessNoBypassAccessBooleanDeny(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
       return True
     lp.setBypassCallback(bypass_callback)
     self.assertFalse(lp.checkAccess(permissions = {'no_bypass': True}, context = {}))
-    
+
   def testCheckAccessNoBypassAccessDictAllow(self):
     lp = LogicalPermissions()
     def flag_callback(flag, context):
@@ -382,7 +382,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       'never_bypass': False,
     }
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessNoBypassAccessDictDeny(self):
     lp = LogicalPermissions()
     def flag_callback(flag, context):
@@ -408,7 +408,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       'never_bypass': True,
     }
     self.assertFalse(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessWrongPermissionCallbackReturnType(self):
     lp = LogicalPermissions()
     def flag_callback(flag, context):
@@ -457,7 +457,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       'testflag': True
     }
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessSingleItemDeny(self):
     lp = LogicalPermissions()
     def flag_callback(flag, context):
@@ -481,7 +481,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     self.assertFalse(lp.checkAccess(permissions, {'user': user}))
     self.assertFalse(lp.checkAccess(permissions, {}))
-    
+
   def testCheckAccessMultipleTypesShorthandOR(self):
     lp = LogicalPermissions()
     def flag_callback(flag, context):
@@ -515,9 +515,9 @@ class LogicalPermissionsTest(unittest.TestCase):
       'misc': 'test',
     }
     user = {
-      'id': 1, 
+      'id': 1,
     }
-    
+
     # OR truth table
     # 0 0 0
     self.assertFalse(lp.checkAccess(permissions, {'user': user}))
@@ -547,7 +547,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     # 1 1 1
     user['test'] = True
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessMultipleItemsShorthandOR(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -576,7 +576,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     # 1 1
     user['roles'] = ['editor', 'admin']
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessANDWrongValueType(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -590,7 +590,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setTypes(types)
     permissions = {
       'role': {
-        'AND': 'admin', 
+        'AND': 'admin',
       },
     }
     user = {
@@ -599,7 +599,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessANDTooFewElements(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -618,7 +618,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'AND': [], 
+        'AND': [],
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
@@ -626,12 +626,12 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'AND': {}, 
+        'AND': {},
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessMultipleItemsAND(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -671,7 +671,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       # 1 1 1
       user['roles'] = ['admin', 'editor', 'writer']
       self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-      
+
     # Test list values
     permissions = {
       'role': {
@@ -717,7 +717,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       }
     }
     run_truth_table(permissions)
-    
+
   def testCheckAccessNANDWrongValueType(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -731,7 +731,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setTypes(types)
     permissions = {
       'role': {
-        'NAND': 'admin', 
+        'NAND': 'admin',
       },
     }
     user = {
@@ -740,7 +740,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessNANDTooFewElements(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -759,7 +759,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'NAND': [], 
+        'NAND': [],
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
@@ -767,12 +767,12 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'NAND': {}, 
+        'NAND': {},
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessMultipleItemsNAND(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -812,7 +812,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       # 1 1 1
       user['roles'] = ['admin', 'editor', 'writer']
       self.assertFalse(lp.checkAccess(permissions, {'user': user}))
-      
+
     # Test list values
     permissions = {
       'role': {
@@ -858,7 +858,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       }
     }
     run_truth_table(permissions)
-    
+
   def testCheckAccessORWrongValueType(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -872,7 +872,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setTypes(types)
     permissions = {
       'role': {
-        'OR': 'admin', 
+        'OR': 'admin',
       },
     }
     user = {
@@ -881,7 +881,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessORTooFewElements(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -900,7 +900,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'OR': [], 
+        'OR': [],
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
@@ -908,12 +908,12 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'OR': {}, 
+        'OR': {},
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessMultipleItemsOR(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -953,7 +953,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       # 1 1 1
       user['roles'] = ['admin', 'editor', 'writer']
       self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-      
+
     # Test list values
     permissions = {
       'role': {
@@ -999,7 +999,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       }
     }
     run_truth_table(permissions)
-    
+
   def testCheckAccessNORWrongValueType(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1013,7 +1013,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setTypes(types)
     permissions = {
       'role': {
-        'NOR': 'admin', 
+        'NOR': 'admin',
       },
     }
     user = {
@@ -1022,7 +1022,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessNORTooFewElements(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1041,7 +1041,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'NOR': [], 
+        'NOR': [],
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
@@ -1049,12 +1049,12 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'NOR': {}, 
+        'NOR': {},
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessMultipleItemsNOR(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1094,7 +1094,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       # 1 1 1
       user['roles'] = ['admin', 'editor', 'writer']
       self.assertFalse(lp.checkAccess(permissions, {'user': user}))
-      
+
     # Test list values
     permissions = {
       'role': {
@@ -1140,7 +1140,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       }
     }
     run_truth_table(permissions)
-    
+
   def testCheckAccessXORWrongValueType(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1154,7 +1154,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setTypes(types)
     permissions = {
       'role': {
-        'XOR': 'admin', 
+        'XOR': 'admin',
       },
     }
     user = {
@@ -1163,7 +1163,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessXORTooFewElements(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1182,7 +1182,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'XOR': ['admin'], 
+        'XOR': ['admin'],
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
@@ -1190,12 +1190,12 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'XOR': {0: 'admin'}, 
+        'XOR': {0: 'admin'},
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessMultipleItemsXOR(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1235,7 +1235,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       # 1 1 1
       user['roles'] = ['admin', 'editor', 'writer']
       self.assertFalse(lp.checkAccess(permissions, {'user': user}))
-      
+
     # Test list values
     permissions = {
       'role': {
@@ -1281,7 +1281,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       }
     }
     run_truth_table(permissions)
-    
+
   def testCheckAccessNOTWrongValueType(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1295,7 +1295,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setTypes(types)
     permissions = {
       'role': {
-        'NOT': True, 
+        'NOT': True,
       },
     }
     user = {
@@ -1323,7 +1323,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'NOT': '', 
+        'NOT': '',
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
@@ -1331,12 +1331,12 @@ class LogicalPermissionsTest(unittest.TestCase):
 
     permissions = {
       'role': {
-        'NOT': {}, 
+        'NOT': {},
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {'user': user})
-      
+
   def testCheckAccessMultipleItemsNOT(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1355,12 +1355,12 @@ class LogicalPermissionsTest(unittest.TestCase):
           0: 'admin',
           1: 'editor',
           2: 'writer',
-        }, 
+        },
       },
     }
     with self.assertRaises(InvalidValueForLogicGateException):
       lp.checkAccess(permissions, {})
-      
+
   def testCheckAccessSingleItemNOTString(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1387,7 +1387,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
     user['roles'] = ['editor']
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessSingleItemNOTDict(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1414,7 +1414,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
     user['roles'] = ['editor']
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessNestedLogic(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1448,7 +1448,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
     user['roles'] = ['editor']
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessLogicGateFirst(self):
     lp = LogicalPermissions()
     def role_callback(role, context):
@@ -1484,7 +1484,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
     user['roles'] = ['editor']
     self.assertTrue(lp.checkAccess(permissions, {'user': user}))
-    
+
   def testCheckAccessShorthandORMixedDictsLists(self):
     lp = LogicalPermissions()
     def role_callback(role, context):

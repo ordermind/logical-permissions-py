@@ -203,7 +203,7 @@ class LogicalPermissions(object):
       return self.__processOR(permissions = permissions_copy, context = context)
 
   def __getCorePermissionKeys(self):
-    return ['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT']
+    return ['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']
 
   def __checkBypassAccess(self, context):
     bypass_access = False
