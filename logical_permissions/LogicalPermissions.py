@@ -2,7 +2,7 @@ from logical_permissions.exceptions import *
 import copy
 
 class LogicalPermissions(object):
-  
+
   def __init__(self):
     self.__types = {}
     self.__bypass_callback = None
@@ -29,7 +29,7 @@ class LogicalPermissions(object):
     types = self.getTypes()
     types[name] = callback
     self.setTypes(types = types)
-  
+
   def removeType(self, name):
     """Removes a permission type.
 
@@ -43,17 +43,17 @@ class LogicalPermissions(object):
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
     if not self.typeExists(name = name):
       raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
-    
+
     types = self.getTypes()
     types.pop(name, None)
     self.setTypes(types = types)
-    
+
   def typeExists(self, name):
     """Checks whether a permission type is registered.
 
     Args:
       name: A string with the name of the permission type
-    
+
     Returns:
       True if the type is found or False if the type isn't found.
 
@@ -71,7 +71,7 @@ class LogicalPermissions(object):
 
     Args:
       name: A string with the name of the permission type
-    
+
     Returns:
       Callback for the permission type.
 
@@ -82,17 +82,17 @@ class LogicalPermissions(object):
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
     if not self.typeExists(name = name):
       raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
-    
+
     types = self.getTypes()
     return types[name]
-  
+
   def setTypeCallback(self, name, callback):
     """Changes the callback for an existing permission type.
-    
+
     Args:
       name: A string with the name of the permission type
       callback: The callback that evaluates the permission type. Upon calling checkAccess() the registered callback will be passed two parameters: a permission string (such as a role) and the context dictionary passed to checkAccess(). The permission will always be a single string even if for example multiple roles are accepted. In that case the callback will be called once for each role that is to be evaluated. The callback should return a boolean which determines whether access should be granted.
-      
+
     """
     if not isinstance(name, str):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
@@ -102,7 +102,7 @@ class LogicalPermissions(object):
       raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(name))
     if not hasattr(callback, '__call__'):
       raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
-    
+
     types = self.getTypes()
     types[name] = callback
     self.setTypes(types = types)
@@ -136,7 +136,7 @@ class LogicalPermissions(object):
         raise InvalidArgumentValueException('The types callbacks must be callables.')
 
     self.__types = copy.copy(types)
-  
+
   def getBypassCallback(self):
     """Gets the current bypass access callback.
 
@@ -145,7 +145,7 @@ class LogicalPermissions(object):
 
     """
     return self.__bypass_callback
-    
+
   def setBypassCallback(self, callback):
     """Sets the bypass access callback.
 
@@ -155,15 +155,15 @@ class LogicalPermissions(object):
     """
     if not hasattr(callback, '__call__'):
       raise InvalidArgumentTypeException('The callback parameter must be a callable data type.')
-    
+
     self.__bypass_callback = callback
-  
+
   def getValidPermissionKeys(self):
     """Gets all keys that can be part of a permission tree.
-    
+
     Returns:
       List of valid permission keys
-      
+
     """
     return self.__getCorePermissionKeys() + list(self.getTypes())
 
@@ -174,7 +174,7 @@ class LogicalPermissions(object):
       permissions: A dictionary of the permission tree to be evaluated
       context: A context dictionary that could for example contain the evaluated user and document.
       allow_bypass (optional): Determines whether bypassing access should be allowed. Default value is True.
-      
+
     Returns:
       True if access is granted or False if access is denied.
 
@@ -185,28 +185,26 @@ class LogicalPermissions(object):
       raise InvalidArgumentTypeException('The context parameter must be an dictionary.')
     if not isinstance(allow_bypass, bool):
       raise InvalidArgumentTypeException('The allow_bypass parameter must be a boolean.')
-    
-    access = False
+
     permissions_copy = copy.deepcopy(permissions)
-    if allow_bypass:
-      if 'no_bypass' in permissions_copy:
+    if isinstance(permissions_copy, dict) and 'no_bypass' in permissions_copy:
+      if allow_bypass:
         if isinstance(permissions_copy['no_bypass'], bool):
           allow_bypass = not permissions_copy['no_bypass']
         elif isinstance(permissions_copy['no_bypass'], dict):
           allow_bypass = not self.__processOR(permissions = permissions_copy['no_bypass'], context = context)
         else:
           raise InvalidArgumentValueException('The no_bypass value must be a boolean or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
-        permissions_copy.pop('no_bypass', None)
+      permissions_copy.pop('no_bypass', None)
+
     if allow_bypass and self.__checkBypassAccess(context = context):
-      access = True
-    else:
-      if permissions_copy:
-        access = self.__processOR(permissions = permissions_copy, context = context)
-    return access
-  
+      return True
+    if isinstance(permissions_copy, dict) and permissions_copy:
+      return self.__processOR(permissions = permissions_copy, context = context)
+
   def __getCorePermissionKeys(self):
     return ['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT']
-  
+
   def __checkBypassAccess(self, context):
     bypass_access = False
     bypass_callback = self.getBypassCallback()
@@ -215,7 +213,7 @@ class LogicalPermissions(object):
       if not isinstance(bypass_access, bool):
         raise InvalidCallbackReturnTypeException('The bypass access callback must return a boolean.')
     return bypass_access
-  
+
   def __dispatch(self, permissions, context, type = None):
     access = False
     if permissions:
@@ -257,13 +255,13 @@ class LogicalPermissions(object):
       else:
         raise InvalidArgumentTypeException('Permissions must either be a string, a dictionary or a list. Evaluated permissions: {0}'.format(permissions))
     return access
-  
+
   def __processAND(self, permissions, context, type = None):
     access = False
     if isinstance(permissions, list):
       if len(permissions) < 1:
         raise InvalidValueForLogicGateException('The value list of an AND gate must contain a minimum of one element. Current value: {0}'.format(permissions))
-      
+
       access = True
       for permission in permissions:
         access = access and self.__dispatch(permissions = permission, context = context, type = type)
@@ -272,7 +270,7 @@ class LogicalPermissions(object):
     elif isinstance(permissions, dict):
       if len(permissions) < 1:
         raise InvalidValueForLogicGateException('The value dict of an AND gate must contain a minimum of one element. Current value: {0}'.format(permissions))
-      
+
       access = True
       for key in permissions:
         subpermissions = {key: permissions[key]}
@@ -282,7 +280,7 @@ class LogicalPermissions(object):
     else:
       raise InvalidValueForLogicGateException('The value of an AND gate must be a list or a dict. Current value: {0}'.format(permissions))
     return access
-  
+
   def __processNAND(self, permissions, context, type = None):
     if isinstance(permissions, list):
       if len(permissions) < 1:
@@ -292,10 +290,10 @@ class LogicalPermissions(object):
         raise InvalidValueForLogicGateException('The value dict of a NAND gate must contain a minimum of one element. Current value: {0}'.format(permissions))
     else:
       raise InvalidValueForLogicGateException('The value of a NAND gate must be a list or a dict. Current value: {0}'.format(permissions))
-    
+
     access = not self.__processAND(permissions = permissions, context = context, type = type)
     return access
-  
+
   def __processOR(self, permissions, context, type = None):
     access = False
     if isinstance(permissions, list):
@@ -318,7 +316,7 @@ class LogicalPermissions(object):
     else:
       raise InvalidValueForLogicGateException('The value of an OR gate must be a list or a dict. Current value: {0}'.format(permissions))
     return access
-  
+
   def __processNOR(self, permissions, context, type = None):
     if isinstance(permissions, list):
       if len(permissions) < 1:
@@ -328,10 +326,10 @@ class LogicalPermissions(object):
         raise InvalidValueForLogicGateException('The value dict of a NOR gate must contain a minimum of one element. Current value: {0}'.format(permissions))
     else:
       raise InvalidValueForLogicGateException('The value of a NOR gate must be a list or a dict. Current value: {0}'.format(permissions))
-    
+
     access = not self.__processOR(permissions = permissions, context = context, type = type)
     return access
-  
+
   def __processXOR(self, permissions, context, type = None):
     access = False
     count_true = 0
@@ -339,7 +337,7 @@ class LogicalPermissions(object):
     if isinstance(permissions, list):
       if len(permissions) < 2:
         raise InvalidValueForLogicGateException('The value list of an XOR gate must contain a minimum of two elements. Current value: {0}'.format(permissions))
-      
+
       for permission in permissions:
         this_access = self.__dispatch(permissions = permission, context = context, type = type)
         if this_access:
@@ -352,7 +350,7 @@ class LogicalPermissions(object):
     elif isinstance(permissions, dict):
       if len(permissions) < 2:
         raise InvalidValueForLogicGateException('The value dict of an XOR gate must contain a minimum of two elements. Current value: {0}'.format(permissions))
-      
+
       for key in permissions:
         subpermissions = {key: permissions[key]}
         this_access = self.__dispatch(permissions = subpermissions, context = context, type = type)
@@ -366,7 +364,7 @@ class LogicalPermissions(object):
     else:
       raise InvalidValueForLogicGateException('The value of an XOR gate must be a list or a dict. Current value: {0}'.format(permissions))
     return access
-  
+
   def __processNOT(self, permissions, context, type = None):
     if isinstance(permissions, dict):
       if len(permissions) != 1:
@@ -376,10 +374,10 @@ class LogicalPermissions(object):
         raise InvalidValueForLogicGateException('A NOT permission cannot have an empty string as its value.')
     else:
       raise InvalidValueForLogicGateException('The value of a NOT gate must either be a dict or a string. Current value: {0}'.format(permissions))
-    
+
     access = not self.__dispatch(permissions = permissions, context = context, type = type)
     return access
-  
+
   def __externalAccessCheck(self, permission, context, type):
     if not self.typeExists(type):
       raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(type))
