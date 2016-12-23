@@ -167,12 +167,12 @@ class LogicalPermissions(object):
     """
     return self.__getCorePermissionKeys() + list(self.getTypes())
 
-  def checkAccess(self, permissions, context, allow_bypass = True):
+  def checkAccess(self, permissions, context = {}, allow_bypass = True):
     """Checks access for a permission tree.
 
     Args:
       permissions: A dictionary of the permission tree to be evaluated
-      context: A context dictionary that could for example contain the evaluated user and document.
+      context (optional): A context dictionary that could for example contain the evaluated user and document. Default value is an empty dictionary.
       allow_bypass (optional): Determines whether bypassing access should be allowed. Default value is True.
 
     Returns:

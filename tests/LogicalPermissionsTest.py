@@ -243,7 +243,7 @@ class LogicalPermissionsTest(unittest.TestCase):
   def testCheckAccessParamPermissionsWrongType(self):
     lp = LogicalPermissions()
     with self.assertRaises(InvalidArgumentTypeException):
-      lp.checkAccess(permissions = [], context = {})
+      lp.checkAccess(permissions = [])
 
   def testCheckAccessParamPermissionsWrongPermissionType(self):
     lp = LogicalPermissions()
@@ -251,7 +251,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       'flag': True,
     }
     with self.assertRaises(InvalidArgumentTypeException):
-      lp.checkAccess(permissions = permissions, context = {})
+      lp.checkAccess(permissions = permissions)
 
   def testCheckAccessParamPermissionsNestedTypes(self):
     lp = LogicalPermissions()
@@ -262,7 +262,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       },
     }
     with self.assertRaises(InvalidArgumentValueException):
-      lp.checkAccess(permissions = permissions, context = {})
+      lp.checkAccess(permissions = permissions)
 
     # Indirectly nested
     permissions = {
@@ -273,7 +273,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       },
     }
     with self.assertRaises(InvalidArgumentValueException):
-      lp.checkAccess(permissions = permissions, context = {})
+      lp.checkAccess(permissions = permissions)
 
   def testCheckAccessParamPermissionsUnregisteredType(self):
     lp = LogicalPermissions()
@@ -281,7 +281,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       'flag': 'testflag',
     }
     with self.assertRaises(PermissionTypeNotRegisteredException):
-      lp.checkAccess(permissions = permissions, context = {})
+      lp.checkAccess(permissions = permissions)
 
   def testCheckAccessParamContextWrongType(self):
     lp = LogicalPermissions()
@@ -309,21 +309,21 @@ class LogicalPermissionsTest(unittest.TestCase):
       return 1
     lp.setBypassCallback(bypass_callback)
     with self.assertRaises(InvalidCallbackReturnTypeException):
-      lp.checkAccess(permissions = {}, context = {})
+      lp.checkAccess(permissions = {})
 
   def testCheckAccessBypassAccessAllow(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
       return True
     lp.setBypassCallback(bypass_callback)
-    self.assertTrue(lp.checkAccess(permissions = {}, context = {}))
+    self.assertTrue(lp.checkAccess(permissions = {}))
 
   def testCheckAccessBypassAccessDeny(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
       return False
     lp.setBypassCallback(bypass_callback)
-    self.assertFalse(lp.checkAccess(permissions = {}, context = {}))
+    self.assertFalse(lp.checkAccess(permissions = {}))
 
   def testCheckAccessBypassAccessDeny2(self):
     lp = LogicalPermissions()
@@ -338,7 +338,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       return True
     lp.setBypassCallback(bypass_callback)
     with self.assertRaises(InvalidArgumentValueException):
-      lp.checkAccess(permissions = {'no_bypass': 'test'}, context = {})
+      lp.checkAccess(permissions = {'no_bypass': 'test'})
 
   def testCheckAccessNoBypassAccessBooleanAllow(self):
     lp = LogicalPermissions()
@@ -346,7 +346,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       return True
     lp.setBypassCallback(bypass_callback)
     permissions = {'no_bypass': False}
-    self.assertTrue(lp.checkAccess(permissions = permissions, context = {}))
+    self.assertTrue(lp.checkAccess(permissions = permissions))
     # Test that permission dict is not changed
     self.assertTrue('no_bypass' in permissions)
 
@@ -355,7 +355,7 @@ class LogicalPermissionsTest(unittest.TestCase):
     def bypass_callback(context):
       return True
     lp.setBypassCallback(bypass_callback)
-    self.assertFalse(lp.checkAccess(permissions = {'no_bypass': True}, context = {}))
+    self.assertFalse(lp.checkAccess(permissions = {'no_bypass': True}))
 
   def testCheckAccessNoBypassAccessDictAllow(self):
     lp = LogicalPermissions()
