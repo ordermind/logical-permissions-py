@@ -311,6 +311,16 @@ class LogicalPermissionsTest(unittest.TestCase):
     with self.assertRaises(InvalidCallbackReturnTypeException):
       lp.checkAccess(permissions = {})
 
+  def testCheckAccessBypassAccessIllegalDescendant(self):
+    lp = LogicalPermissions()
+    permissions = {
+      'OR': {
+        'no_bypass': True
+      }
+    }
+    with self.assertRaises(InvalidArgumentValueException):
+      lp.checkAccess(permissions = permissions)
+
   def testCheckAccessBypassAccessAllow(self):
     lp = LogicalPermissions()
     def bypass_callback(context):
