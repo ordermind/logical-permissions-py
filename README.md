@@ -298,7 +298,7 @@ False
 # Deny access for everyone including those with bypass access
 {
   0: False,
-  'no_bypass' => True
+  'no_bypass': True
 }
 ```
 
