@@ -8,3 +8,5 @@ python:
   - "3.5"
   - "nightly"
 script: python -m unittest discover tests "*.py"
+notifications:
+  email: false
