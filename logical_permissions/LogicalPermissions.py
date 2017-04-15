@@ -215,7 +215,7 @@ class LogicalPermissions(object):
     if isinstance(permissions_copy, (dict, list)) and permissions_copy:
       return self.__processOR(permissions = permissions_copy, context = context)
 
-    return False
+    return True
 
   def __getCorePermissionKeys(self):
     return ['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']
