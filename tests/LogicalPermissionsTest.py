@@ -213,7 +213,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
   def testGetValidPermissionKeys(self):
     lp = LogicalPermissions()
-    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']))
+    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['NO_BYPASS', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']))
     def flag_callback(flag, context):
       access = False
       if flag is 'testflag':
@@ -236,7 +236,7 @@ class LogicalPermissionsTest(unittest.TestCase):
       'misc': misc_callback,
     }
     lp.setTypes(types)
-    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE', 'flag', 'role', 'misc']))
+    self.assertEqual(sorted(lp.getValidPermissionKeys()), sorted(['NO_BYPASS', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE', 'flag', 'role', 'misc']))
 
   # ------------LogicalPermissions::checkAccess()---------------
 

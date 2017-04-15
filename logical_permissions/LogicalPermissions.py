@@ -19,7 +19,7 @@ class LogicalPermissions(object):
       raise InvalidArgumentTypeException('The name parameter must be a string.')
     if not name:
       raise InvalidArgumentValueException('The name parameter cannot be empty.')
-    if name in self.__getCorePermissionKeys():
+    if name.upper() in self.__getCorePermissionKeys():
       raise InvalidArgumentValueException('The name parameter has the illegal value "{0}". It cannot be one of the following values: {1}'.format(name, ','.join(self.__getCorePermissionKeys())))
     if self.typeExists(name = name):
       raise PermissionTypeAlreadyExistsException('The type "{0}" already exists! If you want to change the callback for an existing type, please use LogicalPermissions:setTypeCallback().'.format(name))
@@ -130,7 +130,7 @@ class LogicalPermissions(object):
         raise InvalidArgumentValueException('The types keys must be strings.')
       if not name:
         raise InvalidArgumentValueException('The name for a type cannot be empty.')
-      if name in self.__getCorePermissionKeys():
+      if name.upper() in self.__getCorePermissionKeys():
         raise InvalidArgumentValueException('The name for a type has the illegal value "{0}". It cannot be one of the following values: {1}'.format(name, ','.join(self.__getCorePermissionKeys())))
       if not hasattr(types[name], '__call__'):
         raise InvalidArgumentValueException('The types callbacks must be callables.')
@@ -187,25 +187,31 @@ class LogicalPermissions(object):
       raise InvalidArgumentTypeException('The allow_bypass parameter must be a boolean.')
 
     permissions_copy = copy.deepcopy(permissions)
+
+    # uppercasing of no_bypass key for backward compatibility
     if isinstance(permissions_copy, dict) and 'no_bypass' in permissions_copy:
+      permissions_copy['NO_BYPASS'] = copy.deepcopy(permissions_copy['no_bypass'])
+      permissions_copy.pop('no_bypass', None)
+
+    if isinstance(permissions_copy, dict) and 'NO_BYPASS' in permissions_copy:
       if allow_bypass:
-        if isinstance(permissions_copy['no_bypass'], bool):
-          allow_bypass = not permissions_copy['no_bypass']
-        elif isinstance(permissions_copy['no_bypass'], str):
-          no_bypass_upper = permissions_copy['no_bypass'].upper()
+        if isinstance(permissions_copy['NO_BYPASS'], bool):
+          allow_bypass = not permissions_copy['NO_BYPASS']
+        elif isinstance(permissions_copy['NO_BYPASS'], str):
+          no_bypass_upper = permissions_copy['NO_BYPASS'].upper()
 
           if no_bypass_upper not in ['TRUE', 'FALSE']:
-            raise InvalidArgumentValueException('The no_bypass value must be a boolean, a boolean string or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
+            raise InvalidArgumentValueException('The NO_BYPASS value must be a boolean, a boolean string or a dictionary. Current value: {0}'.format(permissions_copy['NO_BYPASS']))
 
           if no_bypass_upper == 'TRUE':
             allow_bypass = False
           elif no_bypass_upper == 'FALSE':
             allow_bypass = True
-        elif isinstance(permissions_copy['no_bypass'], dict):
-          allow_bypass = not self.__processOR(permissions = permissions_copy['no_bypass'], context = context)
+        elif isinstance(permissions_copy['NO_BYPASS'], dict):
+          allow_bypass = not self.__processOR(permissions = permissions_copy['NO_BYPASS'], context = context)
         else:
-          raise InvalidArgumentValueException('The no_bypass value must be a boolean, a boolean string or a dictionary. Current value: {0}'.format(permissions_copy['no_bypass']))
-      permissions_copy.pop('no_bypass', None)
+          raise InvalidArgumentValueException('The NO_BYPASS value must be a boolean, a boolean string or a dictionary. Current value: {0}'.format(permissions_copy['NO_BYPASS']))
+      permissions_copy.pop('NO_BYPASS', None)
 
     if allow_bypass and self.__checkBypassAccess(context = context):
       return True
@@ -218,7 +224,7 @@ class LogicalPermissions(object):
     return True
 
   def __getCorePermissionKeys(self):
-    return ['no_bypass', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']
+    return ['NO_BYPASS', 'AND', 'NAND', 'OR', 'NOR', 'XOR', 'NOT', 'TRUE', 'FALSE']
 
   def __checkBypassAccess(self, context):
     bypass_callback = self.getBypassCallback()
@@ -241,11 +247,11 @@ class LogicalPermissions(object):
           raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
         return False
     if isinstance(permissions, str):
-      if permissions == 'TRUE':
+      if permissions.upper() == 'TRUE':
         if type is not None:
           raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
         return True
-      if permissions == 'FALSE':
+      if permissions.upper() == 'FALSE':
         if type is not None:
           raise InvalidArgumentValueException('You cannot put a boolean permission as a descendant to a permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
         return False
@@ -256,26 +262,27 @@ class LogicalPermissions(object):
       if len(permissions) == 1:
         key = list(permissions.keys())[0]
         value = permissions[key]
-        if key is 'no_bypass':
-          raise InvalidArgumentValueException('The no_bypass key must be placed highest in the permission hierarchy. Evaluated permissions: {}'.format(permissions))
-        if key is 'AND':
-          return self.__processAND(permissions = value, context = context, type = type)
-        if key is 'NAND':
-          return self.__processNAND(permissions = value, context = context, type = type)
-        if key is 'OR':
-          return self.__processOR(permissions = value, context = context, type = type)
-        if key is 'NOR':
-          return self.__processNOR(permissions = value, context = context, type = type)
-        if key is 'XOR':
-          return self.__processXOR(permissions = value, context = context, type = type)
-        if key is 'NOT':
-          return self.__processNOT(permissions = value, context = context, type = type)
-        if key is 'TRUE' or key is 'FALSE':
-          raise InvalidArgumentValueException('A boolean permission cannot have children. Evaluated permissions: {}'.format(permissions))
-
         if 'long' not in globals(): # Python 3 compability
           long = int
         if not isinstance(key, (int, long, float)):
+          key_upper = key.upper()
+          if key_upper == 'NO_BYPASS':
+            raise InvalidArgumentValueException('The NO_BYPASS key must be placed highest in the permission hierarchy. Evaluated permissions: {}'.format(permissions))
+          if key_upper == 'AND':
+            return self.__processAND(permissions = value, context = context, type = type)
+          if key_upper == 'NAND':
+            return self.__processNAND(permissions = value, context = context, type = type)
+          if key_upper == 'OR':
+            return self.__processOR(permissions = value, context = context, type = type)
+          if key_upper == 'NOR':
+            return self.__processNOR(permissions = value, context = context, type = type)
+          if key_upper == 'XOR':
+            return self.__processXOR(permissions = value, context = context, type = type)
+          if key_upper == 'NOT':
+            return self.__processNOT(permissions = value, context = context, type = type)
+          if key_upper == 'TRUE' or key_upper == 'FALSE':
+            raise InvalidArgumentValueException('A boolean permission cannot have children. Evaluated permissions: {}'.format(permissions))
+
           if type is not None:
             raise InvalidArgumentValueException('You cannot put a permission type as a descendant to another permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
           type = key
