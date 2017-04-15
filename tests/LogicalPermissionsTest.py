@@ -367,6 +367,24 @@ class LogicalPermissionsTest(unittest.TestCase):
     lp.setBypassCallback(bypass_callback)
     self.assertFalse(lp.checkAccess(permissions = {'no_bypass': True}))
 
+  def testCheckAccessNoBypassAccessStringAllow(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    permissions = {'no_bypass': 'false'}
+    self.assertTrue(lp.checkAccess(permissions = permissions))
+    # Test that permission dict is not changed
+    self.assertTrue('no_bypass' in permissions)
+
+  def testCheckAccessNoBypassAccessStringDeny(self):
+    lp = LogicalPermissions()
+    def bypass_callback(context):
+      return True
+    lp.setBypassCallback(bypass_callback)
+    permissions = {'no_bypass': 'true', 0: False}
+    self.assertFalse(lp.checkAccess(permissions = permissions))
+
   def testCheckAccessNoBypassAccessDictAllow(self):
     lp = LogicalPermissions()
     def flag_callback(flag, context):
