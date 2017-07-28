@@ -19,7 +19,7 @@ pip install logical-permissions
 
 USAGE
 
-Please refer to https://github.com/Ordermind/logical-permissions-py for documentation.
+Please refer to https://github.com/ordermind/logical-permissions-py for documentation.
 """
 
 setup(
@@ -28,7 +28,7 @@ setup(
   license = 'MIT',
   description = 'Provides support for dictionary-based permissions with logic gates such as AND and OR.',
   long_description = long_description,
-  url = 'https://github.com/Ordermind/logical-permissions-py',
+  url = 'https://github.com/ordermind/logical-permissions-py',
   author = 'Kristofer Tengström',
   author_email = 'ordermind@gmail.com',
   classifiers = [
