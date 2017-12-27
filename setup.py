@@ -24,7 +24,7 @@ Please refer to https://github.com/ordermind/logical-permissions-py for document
 
 setup(
   name = 'logical-permissions',
-  version = '1.2.4',
+  version = '1.2.5',
   license = 'MIT',
   description = 'Provides support for dictionary-based permissions with logic gates such as AND and OR.',
   long_description = long_description,
@@ -42,6 +42,7 @@ setup(
     'Programming Language :: Python :: 3.3',
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6',
   ],
   keywords = 'permissions',
   packages = find_packages(exclude=['tests*']),
