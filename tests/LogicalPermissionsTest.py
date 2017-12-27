@@ -247,6 +247,7 @@ class LogicalPermissionsTest(unittest.TestCase):
 
   def testCheckAccessParamPermissionsWrongPermissionType(self):
     lp = LogicalPermissions()
+    lp.addType(name = 'flag', callback = lambda: true)
     permissions = {
       'flag': 50,
     }
