@@ -285,8 +285,8 @@ class LogicalPermissions(object):
 
           if type is not None:
             raise InvalidArgumentValueException('You cannot put a permission type as a descendant to another permission type. Existing type: {0}. Evaluated permissions: {1}'.format(type, permissions))
-            if not self.typeExists(key):
-              raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(key))
+          if not self.typeExists(key):
+            raise PermissionTypeNotRegisteredException('The permission type "{0}" has not been registered. Please use LogicalPermissions::addType() or LogicalPermissions::setTypes() to register permission types.'.format(key))
           type = key
 
         if isinstance(value, (dict, list)):
